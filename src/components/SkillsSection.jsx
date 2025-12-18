@@ -14,15 +14,7 @@ const skills = [
   { name: "Figma", level: 55, category: "Design" },
 ];
 
-const SkillBar = ({
-  skill,
-  index,
-  isInView,
-}: {
-  skill: (typeof skills)[0];
-  index: number;
-  isInView: boolean;
-}) => (
+const SkillBar = ({ skill, index, isInView }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={isInView ? { opacity: 1, y: 0 } : {}}
