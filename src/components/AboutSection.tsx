@@ -17,10 +17,10 @@ const AboutSection = () => {
           className="text-center mb-16"
         >
           <span className="text-primary font-medium text-sm uppercase tracking-wider">
-            Tentang Saya
+            About Me
           </span>
           <h2 className="text-3xl md:text-4xl font-display font-bold mt-2">
-            Mengenal Lebih Dekat
+            Get to Know Me
           </h2>
         </motion.div>
 
@@ -47,33 +47,33 @@ const AboutSection = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-              Saya adalah mahasiswa semester 5 di jurusan Teknik Informatika
-              dengan minat yang kuat dalam pengembangan web dan teknologi.
-              Selalu antusias untuk mempelajari hal-hal baru dan mengerjakan
-              proyek-proyek yang menantang.
+              I'm an Informatics Engineering student at Telkom University
+              with a strong passion for web development and technology.
+              Always enthusiastic about learning new things and working on
+              challenging projects.
             </p>
             <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-              Di waktu luang, saya senang mengeksplorasi teknologi terbaru,
-              berkontribusi di open source, dan berbagi pengetahuan dengan
-              komunitas developer.
+              In my free time, I enjoy exploring the latest technologies,
+              contributing to open source, and sharing knowledge with the
+              developer community.
             </p>
 
             <div className="space-y-4">
               {[
                 {
                   icon: GraduationCap,
-                  label: "Universitas Teknologi Indonesia",
-                  sub: "Teknik Informatika",
+                  label: "Telkom University",
+                  sub: "Informatics Engineering",
                 },
                 {
                   icon: MapPin,
-                  label: "Jakarta, Indonesia",
-                  sub: "Lokasi",
+                  label: "Bandung, Indonesia",
+                  sub: "Location",
                 },
                 {
                   icon: Calendar,
-                  label: "2022 - Sekarang",
-                  sub: "Tahun Masuk",
+                  label: "2023 - Present",
+                  sub: "Enrollment Year",
                 },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-4">

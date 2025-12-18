@@ -20,16 +20,16 @@ const ContactSection = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Pesan Terkirim! ✉️",
-      description: "Terima kasih telah menghubungi saya. Saya akan segera membalas.",
+      title: "Message Sent! ✉️",
+      description: "Thank you for reaching out. I'll get back to you soon.",
     });
     setFormData({ name: "", email: "", message: "" });
   };
 
   const contactInfo = [
-    { icon: Mail, label: "Email", value: "ahmad.rizky@email.com" },
-    { icon: Phone, label: "Telepon", value: "+62 812-3456-7890" },
-    { icon: MapPin, label: "Lokasi", value: "Jakarta, Indonesia" },
+    { icon: Mail, label: "Email", value: "jianhazel@email.com" },
+    { icon: Phone, label: "Phone", value: "+62 812-3456-7890" },
+    { icon: MapPin, label: "Location", value: "Bandung, Indonesia" },
   ];
 
   return (
@@ -42,13 +42,13 @@ const ContactSection = () => {
           className="text-center mb-16"
         >
           <span className="text-primary font-medium text-sm uppercase tracking-wider">
-            Kontak
+            Contact
           </span>
           <h2 className="text-3xl md:text-4xl font-display font-bold mt-2">
-            Mari Terhubung
+            Let's Connect
           </h2>
           <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-            Tertarik untuk berkolaborasi atau punya pertanyaan? Jangan ragu untuk menghubungi saya!
+            Interested in collaborating or have questions? Feel free to reach out!
           </p>
         </motion.div>
 
@@ -86,7 +86,7 @@ const ContactSection = () => {
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <Input
-                  placeholder="Nama Anda"
+                  placeholder="Your Name"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
@@ -98,7 +98,7 @@ const ContactSection = () => {
               <div>
                 <Input
                   type="email"
-                  placeholder="Email Anda"
+                  placeholder="Your Email"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
@@ -110,7 +110,7 @@ const ContactSection = () => {
             </div>
             <div>
               <Textarea
-                placeholder="Pesan Anda..."
+                placeholder="Your Message..."
                 rows={6}
                 value={formData.message}
                 onChange={(e) =>
@@ -126,7 +126,7 @@ const ContactSection = () => {
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow"
             >
               <Send className="w-4 h-4 mr-2" />
-              Kirim Pesan
+              Send Message
             </Button>
           </motion.form>
         </div>
