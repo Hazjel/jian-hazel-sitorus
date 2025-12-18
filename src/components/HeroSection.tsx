@@ -22,7 +22,7 @@ const HeroSection = () => {
             transition={{ duration: 0.6 }}
           >
             <span className="inline-block px-4 py-2 rounded-full bg-secondary text-primary text-sm font-medium mb-6">
-              👋 Selamat Datang di Portfolio Saya
+              👋 Welcome to My Portfolio
             </span>
           </motion.div>
 
@@ -32,8 +32,8 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl md:text-6xl lg:text-7xl font-display font-bold mb-6 leading-tight"
           >
-            Halo, Saya{" "}
-            <span className="gradient-text text-glow">Ahmad Rizky</span>
+            Hi, I'm{" "}
+            <span className="gradient-text text-glow">Jian Hazel Sitorus</span>
           </motion.h1>
 
           <motion.p
@@ -42,9 +42,9 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
           >
-            Mahasiswa Teknik Informatika yang passionate dalam pengembangan web
-            dan desain UI/UX. Menciptakan pengalaman digital yang menarik dan
-            fungsional.
+            Informatics Engineering student passionate about web development
+            and UI/UX design. Creating engaging and functional digital
+            experiences.
           </motion.p>
 
           <motion.div
@@ -58,7 +58,7 @@ const HeroSection = () => {
               className="bg-primary text-primary-foreground hover:bg-primary/90 glow font-semibold"
               asChild
             >
-              <a href="#projects">Lihat Karya Saya</a>
+              <a href="#projects">View My Work</a>
             </Button>
             <Button
               size="lg"
@@ -66,7 +66,7 @@ const HeroSection = () => {
               className="border-primary/50 text-foreground hover:bg-primary/10"
               asChild
             >
-              <a href="#contact">Hubungi Saya</a>
+              <a href="#contact">Contact Me</a>
             </Button>
           </motion.div>
 
