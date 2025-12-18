@@ -60,10 +60,10 @@ const SkillsSection = () => {
           className="text-center mb-16"
         >
           <span className="text-primary font-medium text-sm uppercase tracking-wider">
-            Keahlian
+            Expertise
           </span>
           <h2 className="text-3xl md:text-4xl font-display font-bold mt-2">
-            Skill & Teknologi
+            Skills & Technologies
           </h2>
         </motion.div>
 
