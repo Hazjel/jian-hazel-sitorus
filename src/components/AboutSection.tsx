@@ -32,11 +32,11 @@ const AboutSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative"
           >
-            <div className="aspect-square rounded-2xl overflow-hidden gradient-border">
+            <div className="aspect-[3/4] rounded-2xl overflow-hidden gradient-border">
               <img 
                 src={profilePhoto} 
                 alt="Jian Hazel Sitorus" 
-                className="w-full h-full object-cover object-top"
+                className="w-full h-full object-cover object-[center_20%]"
               />
             </div>
             <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/30 rounded-full blur-2xl" />
