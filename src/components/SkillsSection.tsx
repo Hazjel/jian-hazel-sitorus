@@ -3,14 +3,15 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 
 const skills = [
-  { name: "React", level: 85, category: "Frontend" },
-  { name: "TypeScript", level: 80, category: "Frontend" },
-  { name: "Tailwind CSS", level: 90, category: "Frontend" },
-  { name: "Node.js", level: 70, category: "Backend" },
-  { name: "Python", level: 75, category: "Backend" },
-  { name: "PostgreSQL", level: 65, category: "Database" },
-  { name: "Figma", level: 80, category: "Design" },
-  { name: "Git", level: 85, category: "Tools" },
+  { name: "HTML & CSS", level: 80, category: "Frontend" },
+  { name: "JavaScript", level: 75, category: "Frontend" },
+  { name: "Tailwind CSS", level: 50, category: "Frontend" },
+  { name: "Laravel", level: 75, category: "Backend" },
+  { name: "Python", level: 70, category: "Backend" },
+  { name: "Java", level: 70, category: "Backend" },
+  { name: "MySQL", level: 75, category: "Database" },
+  { name: "Git & GitHub", level: 80, category: "Tools" },
+  { name: "Figma", level: 55, category: "Design" },
 ];
 
 const SkillBar = ({
