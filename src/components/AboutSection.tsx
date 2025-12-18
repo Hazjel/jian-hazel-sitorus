@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { GraduationCap, MapPin, Calendar } from "lucide-react";
+import profilePhoto from "@/assets/profile-photo.jpeg";
 
 const AboutSection = () => {
   const ref = useRef(null);
@@ -32,11 +33,11 @@ const AboutSection = () => {
             className="relative"
           >
             <div className="aspect-square rounded-2xl overflow-hidden gradient-border">
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <div className="w-48 h-48 rounded-full bg-secondary flex items-center justify-center">
-                  <span className="text-6xl">👨‍💻</span>
-                </div>
-              </div>
+              <img 
+                src={profilePhoto} 
+                alt="Jian Hazel Sitorus" 
+                className="w-full h-full object-cover object-top"
+              />
             </div>
             <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/30 rounded-full blur-2xl" />
           </motion.div>
