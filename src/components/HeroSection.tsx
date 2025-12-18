@@ -42,7 +42,7 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
           >
-            Informatics Engineering student passionate about web development
+            Informatics student passionate about web development
             and UI/UX design. Creating engaging and functional digital
             experiences.
           </motion.p>
