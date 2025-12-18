@@ -48,7 +48,7 @@ const AboutSection = () => {
           >
             <p className="text-muted-foreground text-lg leading-relaxed mb-6">
               I'm an Informatics student at Telkom University
-              with a strong passion for web development and technology.
+              with a strong passion for software development and AI.
               Always enthusiastic about learning new things and working on
               challenging projects.
             </p>
