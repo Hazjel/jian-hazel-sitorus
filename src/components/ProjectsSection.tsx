@@ -8,7 +8,7 @@ const projects = [
   {
     title: "E-Commerce Platform",
     description:
-      "Platform jual-beli online dengan fitur keranjang, pembayaran, dan manajemen produk. Dibangun dengan React dan Node.js.",
+      "Online marketplace with shopping cart, payment integration, and product management features. Built with React and Node.js.",
     tags: ["React", "Node.js", "MongoDB", "Stripe"],
     github: "#",
     demo: "#",
@@ -17,7 +17,7 @@ const projects = [
   {
     title: "Task Management App",
     description:
-      "Aplikasi manajemen tugas dengan fitur drag-and-drop, reminder, dan kolaborasi tim.",
+      "Task management application with drag-and-drop functionality, reminders, and team collaboration features.",
     tags: ["React", "TypeScript", "Firebase"],
     github: "#",
     demo: "#",
@@ -26,7 +26,7 @@ const projects = [
   {
     title: "Weather Dashboard",
     description:
-      "Dashboard cuaca real-time dengan visualisasi data dan prediksi 7 hari ke depan.",
+      "Real-time weather dashboard with data visualization and 7-day forecast predictions.",
     tags: ["Vue.js", "Chart.js", "OpenWeather API"],
     github: "#",
     demo: "#",
@@ -35,7 +35,7 @@ const projects = [
   {
     title: "Portfolio Website",
     description:
-      "Website portfolio personal dengan animasi smooth dan desain responsif.",
+      "Personal portfolio website with smooth animations and responsive design.",
     tags: ["React", "Framer Motion", "Tailwind"],
     github: "#",
     demo: "#",
@@ -121,7 +121,7 @@ const ProjectsSection = () => {
             Portfolio
           </span>
           <h2 className="text-3xl md:text-4xl font-display font-bold mt-2">
-            Proyek Terbaru
+            Recent Projects
           </h2>
         </motion.div>
 
@@ -147,7 +147,7 @@ const ProjectsSection = () => {
             size="lg"
             className="border-primary/50 text-foreground hover:bg-primary/10"
           >
-            Lihat Semua Proyek
+            View All Projects
           </Button>
         </motion.div>
       </div>
