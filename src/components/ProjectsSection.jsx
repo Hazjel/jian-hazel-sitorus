@@ -43,15 +43,7 @@ const projects = [
   },
 ];
 
-const ProjectCard = ({
-  project,
-  index,
-  isInView,
-}: {
-  project: (typeof projects)[0];
-  index: number;
-  isInView: boolean;
-}) => (
+const ProjectCard = ({ project, index, isInView }) => (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
     animate={isInView ? { opacity: 1, y: 0 } : {}}
