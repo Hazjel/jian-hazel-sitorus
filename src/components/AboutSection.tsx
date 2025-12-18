@@ -47,7 +47,7 @@ const AboutSection = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-              I'm an Informatics Engineering student at Telkom University
+              I'm an Informatics student at Telkom University
               with a strong passion for web development and technology.
               Always enthusiastic about learning new things and working on
               challenging projects.
@@ -63,7 +63,7 @@ const AboutSection = () => {
                 {
                   icon: GraduationCap,
                   label: "Telkom University",
-                  sub: "Informatics Engineering",
+                  sub: "Informatics",
                 },
                 {
                   icon: MapPin,
