@@ -18,7 +18,7 @@ const projects = [
     title: "Task Management App",
     description:
       "Task management application with drag-and-drop functionality, reminders, and team collaboration features.",
-    tags: ["React", "TypeScript", "Firebase"],
+    tags: ["React", "JavaScript", "Firebase"],
     github: "#",
     demo: "#",
     featured: true,
