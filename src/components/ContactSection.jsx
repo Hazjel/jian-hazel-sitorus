@@ -33,7 +33,7 @@ const ContactSection = () => {
   };
 
   const contactInfo = [
-    { icon: Mail, label: "Email", value: "jianhazel@email.com" },
+    { icon: Mail, label: "Email", value: "duojhs222@gmail.com" },
     { icon: MapPin, label: "Location", value: "Bandung, Indonesia" },
   ];
 
