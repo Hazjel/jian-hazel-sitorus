@@ -6,10 +6,12 @@ import { ArrowUpRight } from "lucide-react";
 const projects = [
   {
     num: "01",
-    title: "E-Commerce Platform",
-    description: "Online marketplace with shopping cart, payment integration, and product management.",
-    tags: ["React", "Node.js", "MongoDB"],
+    title: "Marketplace",
+    description: "Online marketplace platform with shopping cart, product management, and user authentication.",
+    tags: ["Laravel", "PHP", "MySQL"],
     year: "2024",
+    github: "https://github.com/Hazjel/marketplace",
+    demo: null,
   },
   {
     num: "02",
@@ -17,6 +19,8 @@ const projects = [
     description: "Task management with drag-and-drop functionality and team collaboration.",
     tags: ["React", "Firebase"],
     year: "2024",
+    github: "#",
+    demo: null,
   },
   {
     num: "03",
@@ -24,6 +28,8 @@ const projects = [
     description: "Real-time weather dashboard with data visualization and forecasts.",
     tags: ["Vue.js", "Chart.js"],
     year: "2023",
+    github: "#",
+    demo: null,
   },
   {
     num: "04",
@@ -31,6 +37,8 @@ const projects = [
     description: "Personal portfolio with Swiss design principles and smooth animations.",
     tags: ["React", "Tailwind"],
     year: "2024",
+    github: "#",
+    demo: null,
   },
 ];
 
@@ -67,14 +75,19 @@ const ProjectCard = ({ project, index, isInView }) => {
           </div>
         </div>
 
-        <motion.a
-          href="#"
-          className="p-3 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <ArrowUpRight size={20} />
-        </motion.a>
+        {project.github && project.github !== "#" && (
+          <motion.a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="View on GitHub"
+          >
+            <ArrowUpRight size={20} />
+          </motion.a>
+        )}
       </div>
     </motion.div>
   );
