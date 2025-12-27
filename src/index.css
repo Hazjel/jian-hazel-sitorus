@@ -2,55 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
-
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
+    /* Swiss Design: High contrast black & white with red accent */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
 
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 0%;
 
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 4%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 0 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 0%;
+    --input: 0 0% 0%;
+    --ring: 0 0% 0%;
+
+    --radius: 0;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 0 0% 0%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 0%;
+    --sidebar-ring: 0 0% 0%;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 0 0% 20%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 0 100% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 0 0% 80%;
-
-    --radius: 0.75rem;
-
-    /* Custom tokens - Monochrome */
-    --gradient-primary: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 70%) 100%);
-    --gradient-text: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 75%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 10%) 0%, hsl(0 0% 7%) 100%);
-    --glow-primary: 0 0 40px hsl(0 0% 100% / 0.15);
-    --glow-accent: 0 0 60px hsl(0 0% 100% / 0.1);
-
-    --sidebar-background: 0 0% 7%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 0 0% 4%;
-    --sidebar-accent: 0 0% 12%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 0 0% 80%;
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
+    --ring: 0 0% 100%;
   }
 }
 
@@ -60,144 +79,107 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Space Grotesk', sans-serif;
+    font-feature-settings: "ss01", "ss02";
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
-  /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
+  }
+
+  ::selection {
+    background: hsl(0 100% 50%);
+    color: hsl(0 0% 100%);
   }
 }
 
 @layer utilities {
-  .gradient-text {
-    background: var(--gradient-text);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* Swiss Grid Lines */
+  .swiss-grid {
+    background-image: 
+      linear-gradient(to right, hsl(var(--border) / 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
 
-  .gradient-border {
-    position: relative;
-    background: var(--gradient-card);
-  }
-
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    padding: 1px;
-    border-radius: inherit;
-    background: var(--gradient-primary);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-
-  .glow {
-    box-shadow: var(--glow-primary);
-  }
-
-  .text-glow {
-    text-shadow: 0 0 30px hsl(0 0% 100% / 0.3);
-  }
-
-  /* Hover effects */
-  .hover-lift {
-    @apply transition-all duration-300 ease-out;
-  }
-  
-  .hover-lift:hover {
-    @apply -translate-y-2 shadow-xl;
-  }
-
-  .hover-scale {
-    @apply transition-transform duration-200 ease-out;
-  }
-  
-  .hover-scale:hover {
-    @apply scale-105;
-  }
-
-  .hover-glow {
-    @apply transition-shadow duration-300;
-  }
-  
-  .hover-glow:hover {
-    box-shadow: var(--glow-primary);
-  }
-
-  /* Underline animation */
-  .link-underline {
+  /* Strong underline for links */
+  .swiss-link {
     @apply relative inline-block;
+    text-decoration: none;
   }
   
-  .link-underline::after {
+  .swiss-link::after {
     content: '';
-    @apply absolute w-full h-0.5 bottom-0 left-0 bg-primary origin-bottom-right transition-transform duration-300 scale-x-0;
+    @apply absolute w-full h-[2px] bottom-0 left-0 bg-accent origin-left transition-transform duration-200;
+    transform: scaleX(0);
   }
   
-  .link-underline:hover::after {
-    @apply origin-bottom-left scale-x-100;
+  .swiss-link:hover::after {
+    transform: scaleX(1);
   }
 
-  /* Card hover effect */
-  .card-hover {
-    @apply transition-all duration-300 ease-out;
-  }
-  
-  .card-hover:hover {
-    @apply -translate-y-1 border-primary/50;
-    box-shadow: 0 20px 40px -15px hsl(0 0% 0% / 0.3);
+  /* Geometric accent */
+  .swiss-accent {
+    @apply relative;
   }
 
-  /* Shimmer effect */
-  .shimmer {
-    background: linear-gradient(
-      90deg,
-      hsl(var(--secondary)) 0%,
-      hsl(var(--muted)) 50%,
-      hsl(var(--secondary)) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 2s linear infinite;
+  .swiss-accent::before {
+    content: '';
+    @apply absolute -left-4 top-0 w-1 h-full bg-accent;
   }
 
-  /* Stagger animation delays */
-  .stagger-1 { animation-delay: 0.1s; }
-  .stagger-2 { animation-delay: 0.2s; }
-  .stagger-3 { animation-delay: 0.3s; }
-  .stagger-4 { animation-delay: 0.4s; }
-  .stagger-5 { animation-delay: 0.5s; }
-
-  /* Icon hover rotation */
-  .icon-spin {
-    @apply transition-transform duration-300;
-  }
-  
-  .icon-spin:hover {
-    @apply rotate-12;
+  /* Number styling */
+  .swiss-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    @apply text-accent;
   }
 
-  /* Button press effect */
+  /* Horizontal rule */
+  .swiss-divider {
+    @apply w-full h-[2px] bg-foreground;
+  }
+
+  /* Text utilities */
+  .text-display {
+    @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-none;
+  }
+
+  .text-headline {
+    @apply text-3xl md:text-4xl font-bold tracking-tight;
+  }
+
+  .text-subhead {
+    @apply text-lg md:text-xl font-medium tracking-tight;
+  }
+
+  .text-mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* Hover effects - minimal */
+  .hover-underline {
+    @apply relative;
+  }
+
+  .hover-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[2px] bg-foreground transition-all duration-300;
+  }
+
+  .hover-underline:hover::after {
+    @apply w-full;
+  }
+
+  /* Button press */
   .btn-press {
     @apply transition-transform duration-100 active:scale-95;
-  }
-
-  /* Focus ring animation */
-  .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
-  }
-
-  /* Typing cursor */
-  .typing-cursor::after {
-    content: '|';
-    @apply animate-pulse ml-1;
   }
 }
