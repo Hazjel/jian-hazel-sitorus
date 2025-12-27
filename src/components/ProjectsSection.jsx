@@ -8,7 +8,7 @@ const projects = [
     num: "01",
     title: "Marketplace",
     description: "Online marketplace platform with shopping cart, product management, and user authentication.",
-    tags: ["Laravel", "PHP", "MySQL"],
+    tags: ["Laravel", "Vue", "PHP", "MySQL"],
     year: "2024",
     github: "https://github.com/Hazjel/marketplace",
     demo: null,
