@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Github, Linkedin, Instagram, Heart, ArrowUp } from "lucide-react";
+import { Github, Linkedin, Instagram, ArrowUp } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -15,64 +15,66 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="py-12 border-t border-border relative">
+    <footer className="py-12 relative">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="grid md:grid-cols-3 gap-8 items-center">
+          {/* Logo */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="flex items-center gap-2 text-muted-foreground text-sm"
           >
-            <span>© {currentYear} Jian Hazel Sitorus. Made with</span>
-            <motion.span
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-              <Heart className="w-4 h-4 text-primary fill-primary" />
-            </motion.span>
+            <span className="text-2xl font-bold">
+              JHS<span className="text-accent">.</span>
+            </span>
           </motion.div>
 
+          {/* Copyright */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex gap-4"
+            transition={{ delay: 0.1 }}
+            className="text-center"
           >
-            {socialLinks.map((social, index) => (
+            <span className="text-sm text-muted-foreground font-mono">
+              © {currentYear} Jian Hazel Sitorus
+            </span>
+          </motion.div>
+
+          {/* Social Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="flex justify-end gap-4"
+          >
+            {socialLinks.map((social) => (
               <motion.a
                 key={social.label}
                 href={social.href}
-                className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-secondary transition-all"
-                whileHover={{ scale: 1.15, y: -3, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 + index * 0.1 }}
+                className="p-2 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.95 }}
                 aria-label={social.label}
               >
-                <social.icon size={20} />
+                <social.icon size={18} />
               </motion.a>
             ))}
           </motion.div>
         </div>
       </div>
 
-      {/* Scroll to top button */}
+      {/* Scroll to top */}
       <motion.button
         onClick={scrollToTop}
-        className="absolute right-6 -top-5 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover-glow"
-        whileHover={{ scale: 1.1, y: -2 }}
-        whileTap={{ scale: 0.9 }}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        className="absolute right-6 top-1/2 -translate-y-1/2 p-3 border-2 border-foreground hover:bg-accent hover:border-accent hover:text-accent-foreground transition-colors"
+        whileHover={{ y: -2 }}
+        whileTap={{ scale: 0.95 }}
         aria-label="Scroll to top"
       >
-        <ArrowUp size={20} />
+        <ArrowUp size={18} />
       </motion.button>
     </footer>
   );
