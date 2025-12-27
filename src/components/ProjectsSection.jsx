@@ -22,33 +22,6 @@ const projects = [
     github: "https://github.com/Hazjel/insurance-cost-prediction",
     demo: null,
   },
-  {
-    num: "03",
-    title: "Task Management App",
-    description: "Task management with drag-and-drop functionality and team collaboration.",
-    tags: ["React", "Firebase"],
-    year: "2024",
-    github: "#",
-    demo: null,
-  },
-  {
-    num: "04",
-    title: "Weather Dashboard",
-    description: "Real-time weather dashboard with data visualization and forecasts.",
-    tags: ["Vue.js", "Chart.js"],
-    year: "2023",
-    github: "#",
-    demo: null,
-  },
-  {
-    num: "05",
-    title: "Portfolio Website",
-    description: "Personal portfolio with Swiss design principles and smooth animations.",
-    tags: ["React", "Tailwind"],
-    year: "2024",
-    github: "#",
-    demo: null,
-  },
 ];
 
 const ProjectCard = ({ project, index, isInView }) => {
