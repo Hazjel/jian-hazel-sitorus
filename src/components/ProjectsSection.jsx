@@ -15,6 +15,15 @@ const projects = [
   },
   {
     num: "02",
+    title: "Insurance Cost Prediction",
+    description: "Machine learning model for predicting insurance costs based on various factors.",
+    tags: ["Python", "Machine Learning", "Scikit-learn"],
+    year: "2025",
+    github: "https://github.com/Hazjel/insurance-cost-prediction",
+    demo: null,
+  },
+  {
+    num: "03",
     title: "Task Management App",
     description: "Task management with drag-and-drop functionality and team collaboration.",
     tags: ["React", "Firebase"],
@@ -23,7 +32,7 @@ const projects = [
     demo: null,
   },
   {
-    num: "03",
+    num: "04",
     title: "Weather Dashboard",
     description: "Real-time weather dashboard with data visualization and forecasts.",
     tags: ["Vue.js", "Chart.js"],
@@ -32,7 +41,7 @@ const projects = [
     demo: null,
   },
   {
-    num: "04",
+    num: "05",
     title: "Portfolio Website",
     description: "Personal portfolio with Swiss design principles and smooth animations.",
     tags: ["React", "Tailwind"],
