@@ -3,41 +3,37 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 
 const skills = [
-  { name: "HTML & CSS", level: 80 },
-  { name: "JavaScript", level: 55 },
-  { name: "Tailwind CSS", level: 50 },
-  { name: "Laravel", level: 75 },
-  { name: "Java", level: 70 },
-  { name: "Python", level: 55 },
-  { name: "MySQL", level: 75 },
-  { name: "Git & GitHub", level: 80 },
-  { name: "Figma", level: 55 },
+  { name: "HTML & CSS", level: "Expert" },
+  { name: "JavaScript", level: "Intermediate" },
+  { name: "Tailwind CSS", level: "Intermediate" },
+  { name: "Laravel", level: "Expert" },
+  { name: "Java", level: "Intermediate" },
+  { name: "Python", level: "Intermediate" },
+  { name: "MySQL", level: "Expert" },
+  { name: "Git & GitHub", level: "Expert" },
+  { name: "Figma", level: "Intermediate" },
 ];
 
-const SkillBar = ({ skill, index, isInView }) => {
+const levelStyles = {
+  Beginner: "bg-muted-foreground",
+  Intermediate: "bg-foreground",
+  Expert: "bg-accent",
+};
+
+const SkillItem = ({ skill, index, isInView }) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={isInView ? { opacity: 1, x: 0 } : {}}
       transition={{ duration: 0.4, delay: index * 0.05 }}
-      className="group"
+      className="flex items-center justify-between py-4 border-b border-foreground group"
     >
-      <div className="flex justify-between items-baseline mb-2">
-        <span className="font-medium group-hover:text-accent transition-colors">
-          {skill.name}
-        </span>
-        <span className="font-mono text-sm text-muted-foreground">
-          {skill.level}%
-        </span>
-      </div>
-      <div className="h-2 bg-muted border border-foreground overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={isInView ? { width: `${skill.level}%` } : {}}
-          transition={{ duration: 0.8, delay: 0.2 + index * 0.05, ease: "easeOut" }}
-          className="h-full bg-foreground group-hover:bg-accent transition-colors"
-        />
-      </div>
+      <span className="font-medium group-hover:text-accent transition-colors">
+        {skill.name}
+      </span>
+      <span className={`text-xs font-mono uppercase tracking-wider px-3 py-1 ${levelStyles[skill.level]} text-background`}>
+        {skill.level}
+      </span>
     </motion.div>
   );
 };
@@ -62,20 +58,48 @@ const SkillsSection = () => {
               <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
                 Technologies and tools I work with.
               </p>
+
+              {/* Legend */}
+              <div className="mt-8 space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-accent" />
+                  <span className="text-xs font-mono uppercase">Expert</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-foreground" />
+                  <span className="text-xs font-mono uppercase">Intermediate</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-muted-foreground" />
+                  <span className="text-xs font-mono uppercase">Beginner</span>
+                </div>
+              </div>
             </motion.div>
           </div>
 
-          {/* Skills Grid */}
+          {/* Skills List */}
           <div className="lg:col-span-9">
-            <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
-              {skills.map((skill, index) => (
-                <SkillBar
-                  key={skill.name}
-                  skill={skill}
-                  index={index}
-                  isInView={isInView}
-                />
-              ))}
+            <div className="grid md:grid-cols-2 gap-x-12">
+              <div>
+                {skills.slice(0, 5).map((skill, index) => (
+                  <SkillItem
+                    key={skill.name}
+                    skill={skill}
+                    index={index}
+                    isInView={isInView}
+                  />
+                ))}
+              </div>
+              <div>
+                {skills.slice(5).map((skill, index) => (
+                  <SkillItem
+                    key={skill.name}
+                    skill={skill}
+                    index={index + 5}
+                    isInView={isInView}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
