@@ -6,7 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 const projects = [
   {
     num: "01",
-    title: "Marketplace",
+    title: "Blukios",
     description: "Online marketplace platform with shopping cart, product management, and user authentication.",
     tags: ["Laravel", "Vue", "PHP", "MySQL"],
     year: "2025",
