@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const contactSchema = z.object({
   name: z
@@ -64,9 +65,9 @@ const ContactSection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const result = contactSchema.safeParse(formData);
-    
+
     if (!result.success) {
       const fieldErrors = {};
       result.error.errors.forEach((error) => {
@@ -80,15 +81,35 @@ const ContactSection = () => {
 
     setIsSubmitting(true);
     setErrors({});
-    
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Message Sent",
-      description: "Thank you for reaching out. I'll get back to you soon.",
-    });
-    setFormData({ name: "", email: "", message: "" });
-    setIsSubmitting(false);
+
+    try {
+      const { error } = await supabase
+        .from("messages")
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            message: formData.message,
+          },
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Message Sent",
+        description: "Thank you for reaching out. I'll get back to you soon.",
+      });
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -150,9 +171,8 @@ const ContactSection = () => {
                     value={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
                     onBlur={() => handleBlur("name")}
-                    className={`bg-background border-2 focus:border-accent rounded-none h-12 ${
-                      errors.name ? "border-destructive" : "border-foreground"
-                    }`}
+                    className={`bg-background border-2 focus:border-accent rounded-none h-12 ${errors.name ? "border-destructive" : "border-foreground"
+                      }`}
                   />
                   {errors.name && (
                     <p className="text-destructive text-xs mt-1 font-mono">{errors.name}</p>
@@ -168,9 +188,8 @@ const ContactSection = () => {
                     value={formData.email}
                     onChange={(e) => handleChange("email", e.target.value)}
                     onBlur={() => handleBlur("email")}
-                    className={`bg-background border-2 focus:border-accent rounded-none h-12 ${
-                      errors.email ? "border-destructive" : "border-foreground"
-                    }`}
+                    className={`bg-background border-2 focus:border-accent rounded-none h-12 ${errors.email ? "border-destructive" : "border-foreground"
+                      }`}
                   />
                   {errors.email && (
                     <p className="text-destructive text-xs mt-1 font-mono">{errors.email}</p>
@@ -187,9 +206,8 @@ const ContactSection = () => {
                   value={formData.message}
                   onChange={(e) => handleChange("message", e.target.value)}
                   onBlur={() => handleBlur("message")}
-                  className={`bg-background border-2 focus:border-accent rounded-none resize-none ${
-                    errors.message ? "border-destructive" : "border-foreground"
-                  }`}
+                  className={`bg-background border-2 focus:border-accent rounded-none resize-none ${errors.message ? "border-destructive" : "border-foreground"
+                    }`}
                 />
                 {errors.message && (
                   <p className="text-destructive text-xs mt-1 font-mono">{errors.message}</p>
