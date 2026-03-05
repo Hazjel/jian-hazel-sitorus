@@ -35,6 +35,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
             repo_link: "",
             image_url: "",
             tags: "",
+            project_date: new Date().toISOString().split('T')[0],
         },
     });
 
@@ -47,6 +48,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                 repo_link: projectToEdit.repo_link || "",
                 image_url: projectToEdit.image_url || "",
                 tags: projectToEdit.tags ? projectToEdit.tags.join(", ") : "",
+                project_date: projectToEdit.project_date || new Date(projectToEdit.created_at).toISOString().split('T')[0],
             });
             setOpen(true);
         } else {
@@ -57,6 +59,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                 repo_link: "",
                 image_url: "",
                 tags: "",
+                project_date: new Date().toISOString().split('T')[0],
             });
         }
     }, [projectToEdit, form]);
@@ -114,6 +117,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                 image_url: imageUrl,
                 tags: values.tags ? values.tags.split(",").map(tag => tag.trim()).filter(Boolean) : [],
                 slug: slug,
+                project_date: values.project_date,
             };
 
             let error;
@@ -243,6 +247,20 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                                     <FormLabel>Repository Link</FormLabel>
                                     <FormControl>
                                         <Input placeholder="https://github.com/..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="project_date"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Project Completion Date</FormLabel>
+                                    <FormControl>
+                                        <Input type="month" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
