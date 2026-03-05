@@ -123,9 +123,10 @@ const Dashboard = () => {
                     <CardHeader>
                         <CardTitle>Recent Activity</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-sm text-muted-foreground">
-                            No recent activity to show.
+                    <CardContent className="h-40 flex items-center justify-center border-t border-muted">
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                            <FolderKanban className="w-4 h-4" />
+                            Your pipeline is clean. Manage projects from the sidebar.
                         </p>
                     </CardContent>
                 </Card>
@@ -133,10 +134,11 @@ const Dashboard = () => {
                     <CardHeader>
                         <CardTitle>Quick Actions</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-sm text-muted-foreground">
-                            Use the sidebar to manage projects and messages.
-                        </p>
+                    <CardContent className="h-40 flex items-center justify-center border-t border-muted">
+                        <div className="flex flex-col gap-3 max-w-sm w-full">
+                            <a href="/admin/projects" className="text-sm px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-center hover:bg-secondary/80 transition-colors">Manage Projects</a>
+                            <a href="/admin/skills" className="text-sm px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-center hover:bg-secondary/80 transition-colors">Update Tech Stack</a>
+                        </div>
                     </CardContent>
                 </Card>
             </div>

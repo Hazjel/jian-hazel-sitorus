@@ -13,6 +13,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import Projects from "./pages/admin/Projects";
 import Messages from "./pages/admin/Messages";
 import Skills from "./pages/admin/Skills";
+import Settings from "./pages/admin/Settings";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageTracker from "./components/PageTracker";
 
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="projects" element={<Projects />} />
               <Route path="messages" element={<Messages />} />
               <Route path="skills" element={<Skills />} />
+              <Route path="settings" element={<Settings />} />
               {/* Future admin routes will go here */}
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
