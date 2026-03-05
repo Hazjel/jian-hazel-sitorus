@@ -22,6 +22,7 @@ const ProjectCard = ({ project, index, isInView }) => {
             <img
               src={project.image_url}
               alt={project.title}
+              loading="lazy"
               className="w-16 h-10 object-cover rounded border border-border"
             />
           )}
