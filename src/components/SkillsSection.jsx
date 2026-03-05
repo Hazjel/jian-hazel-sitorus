@@ -3,6 +3,49 @@ import { useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+// Helper function to map skill names to Devicon URLs
+const getIconUrl = (skillName) => {
+  const nameMap = {
+    "html & css": "html5",
+    "html": "html5",
+    "css": "css3",
+    "javascript": "javascript",
+    "js": "javascript",
+    "typescript": "typescript",
+    "react": "react",
+    "react.js": "react",
+    "next.js": "nextjs",
+    "vue": "vuejs",
+    "tailwind css": "tailwindcss",
+    "tailwind": "tailwindcss",
+    "node.js": "nodejs",
+    "express": "express",
+    "laravel": "laravel",
+    "php": "php",
+    "python": "python",
+    "java": "java",
+    "go": "go",
+    "mysql": "mysql",
+    "postgresql": "postgresql",
+    "mongodb": "mongodb",
+    "firebase": "firebase",
+    "supabase": "supabase",
+    "git": "git",
+    "git & github": "github",
+    "github": "github",
+    "docker": "docker",
+    "figma": "figma",
+    "c++": "cplusplus",
+    "c#": "csharp",
+    "aws": "amazonwebservices",
+  };
+
+  const normalized = skillName.toLowerCase().trim();
+  const slug = nameMap[normalized] || normalized.replace(/[^a-z0-9]/g, '');
+
+  return `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${slug}/${slug}-original.svg`;
+};
+
 const SkillCategory = ({ category, categorySkills, index, isInView }) => {
   return (
     <motion.div
@@ -18,8 +61,18 @@ const SkillCategory = ({ category, categorySkills, index, isInView }) => {
         {categorySkills.map((skill) => (
           <span
             key={skill.id}
-            className="px-4 py-2 bg-background border border-foreground/30 rounded-md text-sm font-medium hover:border-accent hover:text-accent transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-background border border-foreground/30 rounded-md text-sm font-medium hover:border-accent hover:text-accent transition-colors shadow-sm"
           >
+            <img
+              src={getIconUrl(skill.name)}
+              alt=""
+              className="w-4 h-4 object-contain"
+              onError={(e) => {
+                // Remove the image if the icon is not found on devicon
+                e.target.style.display = 'none';
+              }}
+              loading="lazy"
+            />
             {skill.name}
           </span>
         ))}
