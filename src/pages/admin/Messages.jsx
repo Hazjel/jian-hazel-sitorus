@@ -105,8 +105,14 @@ const Messages = () => {
                                 </TableRow>
                             ) : messages.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-8">
-                                        No messages yet.
+                                    <TableCell colSpan={5} className="h-[400px] text-center">
+                                        <div className="flex flex-col items-center justify-center space-y-3 text-muted-foreground">
+                                            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-2">
+                                                <MailOpen className="w-8 h-8 opacity-50" />
+                                            </div>
+                                            <p className="text-lg font-medium text-foreground">All caught up!</p>
+                                            <p className="text-sm">You don't have any messages yet.</p>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ) : (

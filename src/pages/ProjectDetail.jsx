@@ -72,6 +72,7 @@ const ProjectDetail = () => {
                                 <img
                                     src={project.image_url}
                                     alt={project.title}
+                                    loading="lazy"
                                     className="object-cover w-full h-full"
                                 />
                             ) : (
