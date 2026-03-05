@@ -16,7 +16,6 @@ import { toast } from "sonner";
 const Skills = () => {
     const [skills, setSkills] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [isSeeding, setIsSeeding] = useState(false);
 
     useEffect(() => {
         fetchSkills();
@@ -57,33 +56,6 @@ const Skills = () => {
         }
     };
 
-    const seedSkills = async () => {
-        const previousSkills = [
-            { name: "HTML & CSS", category: "Frontend", proficiency: 90 },
-            { name: "JavaScript", category: "Frontend", proficiency: 70 },
-            { name: "Tailwind CSS", category: "Frontend", proficiency: 75 },
-            { name: "Laravel", category: "Backend", proficiency: 85 },
-            { name: "Java", category: "Backend", proficiency: 65 },
-            { name: "Python", category: "Backend", proficiency: 60 },
-            { name: "MySQL", category: "Database", proficiency: 85 },
-            { name: "Git & GitHub", category: "Tools", proficiency: 85 },
-            { name: "Figma", category: "Design", proficiency: 70 },
-        ];
-
-        setIsSeeding(true);
-        try {
-            const { error } = await supabase.from("skills").insert(previousSkills);
-            if (error) throw error;
-            toast.success("Previous skills restored successfully!");
-            fetchSkills();
-        } catch (error) {
-            console.error("Error seeding skills:", error);
-            toast.error("Failed to restore skills.");
-        } finally {
-            setIsSeeding(false);
-        }
-    };
-
     if (loading) {
         return <div className="p-8 text-muted-foreground">Loading skills...</div>;
     }
@@ -113,15 +85,8 @@ const Skills = () => {
                     <TableBody>
                         {skills.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={4} className="h-48 text-center space-y-4">
-                                    <p className="text-muted-foreground">No skills found. Add your first skill!</p>
-                                    <Button
-                                        variant="outline"
-                                        onClick={seedSkills}
-                                        disabled={isSeeding}
-                                    >
-                                        {isSeeding ? "Restoring..." : "Restore Previous Skills"}
-                                    </Button>
+                                <TableCell colSpan={4} className="h-24 text-center">
+                                    No skills found. Add your first skill!
                                 </TableCell>
                             </TableRow>
                         ) : (
