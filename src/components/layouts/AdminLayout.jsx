@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, FolderKanban, MessageSquare, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, FolderKanban, MessageSquare, Settings, LogOut, Code } from "lucide-react";
 
 const AdminLayout = () => {
     const navigate = useNavigate();
@@ -17,6 +17,7 @@ const AdminLayout = () => {
         { icon: LayoutDashboard, label: "Overview", path: "/admin" },
         { icon: FolderKanban, label: "Projects", path: "/admin/projects" },
         { icon: MessageSquare, label: "Messages", path: "/admin/messages" },
+        { icon: Code, label: "Skills", path: "/admin/skills" },
         { icon: Settings, label: "Settings", path: "/admin/settings" },
     ];
 

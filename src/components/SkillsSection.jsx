@@ -1,18 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
-
-const skills = [
-  { name: "HTML & CSS", level: "Expert" },
-  { name: "JavaScript", level: "Intermediate" },
-  { name: "Tailwind CSS", level: "Intermediate" },
-  { name: "Laravel", level: "Expert" },
-  { name: "Java", level: "Intermediate" },
-  { name: "Python", level: "Intermediate" },
-  { name: "MySQL", level: "Expert" },
-  { name: "Git & GitHub", level: "Expert" },
-  { name: "Figma", level: "Intermediate" },
-];
+import { useRef, useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const levelStyles = {
   Beginner: "bg-muted-foreground",
@@ -20,7 +9,14 @@ const levelStyles = {
   Expert: "bg-accent",
 };
 
+const getLevelFromProficiency = (proficiency) => {
+  if (proficiency >= 80) return "Expert";
+  if (proficiency >= 50) return "Intermediate";
+  return "Beginner";
+};
+
 const SkillItem = ({ skill, index, isInView }) => {
+  const level = getLevelFromProficiency(skill.proficiency);
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -31,8 +27,8 @@ const SkillItem = ({ skill, index, isInView }) => {
       <span className="font-medium group-hover:text-accent transition-colors">
         {skill.name}
       </span>
-      <span className={`text-xs font-mono uppercase tracking-wider px-3 py-1 ${levelStyles[skill.level]} text-background`}>
-        {skill.level}
+      <span className={`text-xs font-mono uppercase tracking-wider px-3 py-1 ${levelStyles[level]} text-background`}>
+        {level}
       </span>
     </motion.div>
   );
@@ -41,6 +37,32 @@ const SkillItem = ({ skill, index, isInView }) => {
 const SkillsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("skills")
+          .select("*")
+          .order("proficiency", { ascending: false });
+
+        if (error) throw error;
+        setSkills(data || []);
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
+  const halfLength = Math.ceil(skills.length / 2);
+  const firstHalf = skills.slice(0, halfLength);
+  const secondHalf = skills.slice(halfLength);
 
   return (
     <section id="skills" className="py-24 bg-muted border-b-2 border-foreground" ref={ref}>
@@ -79,28 +101,36 @@ const SkillsSection = () => {
 
           {/* Skills List */}
           <div className="lg:col-span-9">
-            <div className="grid md:grid-cols-2 gap-x-12">
-              <div>
-                {skills.slice(0, 5).map((skill, index) => (
-                  <SkillItem
-                    key={skill.name}
-                    skill={skill}
-                    index={index}
-                    isInView={isInView}
-                  />
-                ))}
+            {loading ? (
+              <div className="text-center text-muted-foreground py-10">Loading skills...</div>
+            ) : skills.length === 0 ? (
+              <div className="text-center text-muted-foreground py-10">
+                No skills listed yet.
               </div>
-              <div>
-                {skills.slice(5).map((skill, index) => (
-                  <SkillItem
-                    key={skill.name}
-                    skill={skill}
-                    index={index + 5}
-                    isInView={isInView}
-                  />
-                ))}
+            ) : (
+              <div className="grid md:grid-cols-2 gap-x-12">
+                <div>
+                  {firstHalf.map((skill, index) => (
+                    <SkillItem
+                      key={skill.id}
+                      skill={skill}
+                      index={index}
+                      isInView={isInView}
+                    />
+                  ))}
+                </div>
+                <div>
+                  {secondHalf.map((skill, index) => (
+                    <SkillItem
+                      key={skill.id}
+                      skill={skill}
+                      index={index + firstHalf.length}
+                      isInView={isInView}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
