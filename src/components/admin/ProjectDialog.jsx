@@ -9,6 +9,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {
@@ -35,7 +36,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
             repo_link: "",
             image_url: "",
             tags: "",
-            project_date: new Date().toISOString().split('T')[0],
+            project_date: new Date().toISOString().substring(0, 7), // YYYY-MM for type="month"
         },
     });
 
@@ -48,7 +49,9 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                 repo_link: projectToEdit.repo_link || "",
                 image_url: projectToEdit.image_url || "",
                 tags: projectToEdit.tags ? projectToEdit.tags.join(", ") : "",
-                project_date: projectToEdit.project_date || new Date(projectToEdit.created_at).toISOString().split('T')[0],
+                project_date: projectToEdit.project_date
+                    ? projectToEdit.project_date.substring(0, 7) // Extract YYYY-MM from YYYY-MM-DD
+                    : new Date(projectToEdit.created_at).toISOString().substring(0, 7),
             });
             setOpen(true);
         } else {
@@ -59,7 +62,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                 repo_link: "",
                 image_url: "",
                 tags: "",
-                project_date: new Date().toISOString().split('T')[0],
+                project_date: new Date().toISOString().substring(0, 7),
             });
         }
     }, [projectToEdit, form]);
@@ -117,7 +120,8 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                 image_url: imageUrl,
                 tags: values.tags ? values.tags.split(",").map(tag => tag.trim()).filter(Boolean) : [],
                 slug: slug,
-                project_date: values.project_date,
+                // Supabase needs YYYY-MM-DD for date columns, so append -01 to the month
+                project_date: values.project_date ? `${values.project_date}-01` : null,
             };
 
             let error;
@@ -161,6 +165,9 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                     <DialogTitle>
                         {projectToEdit ? "Edit Project" : "Add New Project"}
                     </DialogTitle>
+                    <DialogDescription className="sr-only">
+                        Fill in the project details form below.
+                    </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
