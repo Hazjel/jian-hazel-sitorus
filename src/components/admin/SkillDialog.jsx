@@ -141,6 +141,7 @@ export function SkillDialog({ skillToEdit = null, onSuccess }) {
                                         <SelectContent>
                                             <SelectItem value="Frontend">Frontend</SelectItem>
                                             <SelectItem value="Backend">Backend</SelectItem>
+                                            <SelectItem value="Data & AI">Data & AI</SelectItem>
                                             <SelectItem value="Tools">Tools</SelectItem>
                                             <SelectItem value="Database">Database</SelectItem>
                                             <SelectItem value="Design">Design</SelectItem>
