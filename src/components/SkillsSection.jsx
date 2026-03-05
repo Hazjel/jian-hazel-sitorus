@@ -3,33 +3,27 @@ import { useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-const levelStyles = {
-  Beginner: "bg-muted-foreground",
-  Intermediate: "bg-foreground",
-  Expert: "bg-accent",
-};
-
-const getLevelFromProficiency = (proficiency) => {
-  if (proficiency >= 80) return "Expert";
-  if (proficiency >= 50) return "Intermediate";
-  return "Beginner";
-};
-
-const SkillItem = ({ skill, index, isInView }) => {
-  const level = getLevelFromProficiency(skill.proficiency);
+const SkillCategory = ({ category, categorySkills, index, isInView }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={isInView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
-      className="flex items-center justify-between py-4 border-b border-foreground group"
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
+      className="mb-10 last:mb-0"
     >
-      <span className="font-medium group-hover:text-accent transition-colors">
-        {skill.name}
-      </span>
-      <span className={`text-xs font-mono uppercase tracking-wider px-3 py-1 ${levelStyles[level]} text-background`}>
-        {level}
-      </span>
+      <h3 className="text-xl font-bold mb-4 text-foreground border-b border-muted-foreground/20 pb-2">
+        {category}
+      </h3>
+      <div className="flex flex-wrap gap-3">
+        {categorySkills.map((skill) => (
+          <span
+            key={skill.id}
+            className="px-4 py-2 bg-background border border-foreground/30 rounded-md text-sm font-medium hover:border-accent hover:text-accent transition-colors shadow-sm"
+          >
+            {skill.name}
+          </span>
+        ))}
+      </div>
     </motion.div>
   );
 };
@@ -37,7 +31,7 @@ const SkillItem = ({ skill, index, isInView }) => {
 const SkillsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [skills, setSkills] = useState([]);
+  const [groupedSkills, setGroupedSkills] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,10 +40,21 @@ const SkillsSection = () => {
         const { data, error } = await supabase
           .from("skills")
           .select("*")
-          .order("proficiency", { ascending: false });
+          .order("category", { ascending: true })
+          .order("name", { ascending: true });
 
         if (error) throw error;
-        setSkills(data || []);
+
+        // Group skills by category
+        const grouped = (data || []).reduce((acc, skill) => {
+          if (!acc[skill.category]) {
+            acc[skill.category] = [];
+          }
+          acc[skill.category].push(skill);
+          return acc;
+        }, {});
+
+        setGroupedSkills(grouped);
       } catch (error) {
         console.error("Error fetching skills:", error);
       } finally {
@@ -60,9 +65,7 @@ const SkillsSection = () => {
     fetchSkills();
   }, []);
 
-  const halfLength = Math.ceil(skills.length / 2);
-  const firstHalf = skills.slice(0, halfLength);
-  const secondHalf = skills.slice(halfLength);
+  const categories = Object.keys(groupedSkills);
 
   return (
     <section id="skills" className="py-24 bg-muted border-b-2 border-foreground" ref={ref}>
@@ -76,55 +79,42 @@ const SkillsSection = () => {
               transition={{ duration: 0.5 }}
             >
               <span className="text-accent font-mono text-sm">03</span>
-              <h2 className="text-headline mt-2">Skills</h2>
+              <h2 className="text-headline mt-2">Tech Stack</h2>
               <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
-                Technologies and tools I work with.
+                Technologies, frameworks, and tools I use to build solutions.
               </p>
-
-              {/* Legend */}
-              <div className="mt-8 space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-accent" />
-                  <span className="text-xs font-mono uppercase">Expert</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-foreground" />
-                  <span className="text-xs font-mono uppercase">Intermediate</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-muted-foreground" />
-                  <span className="text-xs font-mono uppercase">Beginner</span>
-                </div>
-              </div>
             </motion.div>
           </div>
 
           {/* Skills List */}
           <div className="lg:col-span-9">
             {loading ? (
-              <div className="text-center text-muted-foreground py-10">Loading skills...</div>
-            ) : skills.length === 0 ? (
+              <div className="text-center text-muted-foreground py-10">Loading tech stack...</div>
+            ) : categories.length === 0 ? (
               <div className="text-center text-muted-foreground py-10">
                 No skills listed yet.
               </div>
             ) : (
               <div className="grid md:grid-cols-2 gap-x-12">
+                {/* Divide categories roughly in half across two columns if possible */}
                 <div>
-                  {firstHalf.map((skill, index) => (
-                    <SkillItem
-                      key={skill.id}
-                      skill={skill}
+                  {categories.slice(0, Math.ceil(categories.length / 2)).map((category, index) => (
+                    <SkillCategory
+                      key={category}
+                      category={category}
+                      categorySkills={groupedSkills[category]}
                       index={index}
                       isInView={isInView}
                     />
                   ))}
                 </div>
                 <div>
-                  {secondHalf.map((skill, index) => (
-                    <SkillItem
-                      key={skill.id}
-                      skill={skill}
-                      index={index + firstHalf.length}
+                  {categories.slice(Math.ceil(categories.length / 2)).map((category, index) => (
+                    <SkillCategory
+                      key={category}
+                      category={category}
+                      categorySkills={groupedSkills[category]}
+                      index={index + Math.ceil(categories.length / 2)}
                       isInView={isInView}
                     />
                   ))}
