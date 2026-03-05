@@ -81,6 +81,7 @@ const Projects = () => {
                             <TableRow>
                                 <TableHead>Image</TableHead>
                                 <TableHead>Title</TableHead>
+                                <TableHead>Date</TableHead>
                                 <TableHead>Links</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
@@ -88,13 +89,13 @@ const Projects = () => {
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={4} className="text-center py-8">
+                                    <TableCell colSpan={5} className="text-center py-8">
                                         Loading projects...
                                     </TableCell>
                                 </TableRow>
                             ) : projects.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={4} className="text-center py-8">
+                                    <TableCell colSpan={5} className="text-center py-8">
                                         No projects found. Add one to get started!
                                     </TableCell>
                                 </TableRow>
@@ -112,6 +113,13 @@ const Projects = () => {
                                         </TableCell>
                                         <TableCell className="font-medium">
                                             {project.title}
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-muted-foreground whitespace-nowrap">
+                                                {project.project_date
+                                                    ? new Date(project.project_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+                                                    : '-'}
+                                            </span>
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex gap-2">
