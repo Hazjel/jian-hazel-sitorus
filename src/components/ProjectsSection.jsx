@@ -28,7 +28,7 @@ const ProjectCard = ({ project, index, isInView }) => {
           )}
         </div>
         <span className="text-muted-foreground font-mono text-sm">
-          {new Date(project.created_at).getFullYear()}
+          {project.project_date ? new Date(project.project_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : new Date(project.created_at).getFullYear()}
         </span>
       </div>
 
