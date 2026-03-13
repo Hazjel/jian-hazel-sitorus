@@ -144,24 +144,37 @@ const ProjectDetail = () => {
                                     {project.documentation_urls.map((url, index) => {
                                         const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
                                         return (
-                                            <div key={index} className="aspect-video relative overflow-hidden rounded-lg border-2 border-foreground">
-                                                {isVideo ? (
-                                                    <video
-                                                        src={url}
-                                                        controls
-                                                        className="object-cover w-full h-full"
-                                                    >
-                                                        Your browser does not support the video tag.
-                                                    </video>
-                                                ) : (
-                                                    <img
-                                                        src={url}
-                                                        alt={`Documentation ${index + 1}`}
-                                                        loading="lazy"
-                                                        className="object-cover w-full h-full"
-                                                    />
-                                                )}
-                                            </div>
+                                            <a
+                                                key={index}
+                                                href={url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="group relative overflow-hidden rounded-lg border-2 border-foreground hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                                            >
+                                                <div className="aspect-video bg-muted">
+                                                    {isVideo ? (
+                                                        <video
+                                                            src={url}
+                                                            controls
+                                                            className="object-cover w-full h-full"
+                                                        >
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                    ) : (
+                                                        <img
+                                                            src={url}
+                                                            alt={`Documentation ${index + 1}`}
+                                                            loading="lazy"
+                                                            className="object-cover w-full h-full"
+                                                        />
+                                                    )}
+                                                </div>
+                                                <div className="pointer-events-none absolute inset-0 flex items-end justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <span className="rounded-full bg-black/60 px-2 py-1 text-xs text-white">
+                                                        Open
+                                                    </span>
+                                                </div>
+                                            </a>
                                         );
                                     })}
                                 </div>
