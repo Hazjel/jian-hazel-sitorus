@@ -27,6 +27,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [imageFile, setImageFile] = useState(null);
+    const [documentationFiles, setDocumentationFiles] = useState([]);
 
     const form = useForm({
         defaultValues: {
@@ -73,6 +74,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
         if (!newOpen) {
             form.reset();
             setImageFile(null);
+            setDocumentationFiles([]);
         }
     };
 
@@ -83,10 +85,16 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
         }
     };
 
+    const handleDocumentationUpload = (e) => {
+        const files = Array.from(e.target.files);
+        setDocumentationFiles(files);
+    };
+
     const onSubmit = async (values) => {
         setLoading(true);
         try {
             let imageUrl = values.image_url;
+            let documentationUrls = [];
 
             if (imageFile) {
                 const fileExt = imageFile.name.split(".").pop();
@@ -106,6 +114,27 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                 imageUrl = data.publicUrl;
             }
 
+            // Upload documentation files
+            if (documentationFiles.length > 0) {
+                for (const file of documentationFiles) {
+                    const fileExt = file.name.split(".").pop();
+                    const fileName = `${Math.random()}.${fileExt}`;
+                    const filePath = `documentation/${fileName}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from("project-images")
+                        .upload(filePath, file);
+
+                    if (uploadError) throw uploadError;
+
+                    const { data } = supabase.storage
+                        .from("project-images")
+                        .getPublicUrl(filePath);
+
+                    documentationUrls.push(data.publicUrl);
+                }
+            }
+
             // Generate slug from title
             const slug = values.title
                 .toLowerCase()
@@ -122,6 +151,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                 slug: slug,
                 // Supabase needs YYYY-MM-DD for date columns, so append -01 to the month
                 project_date: values.project_date ? `${values.project_date}-01` : null,
+                documentation_urls: documentationUrls,
             };
 
             let error;
@@ -216,6 +246,26 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                                 </FormItem>
                             )}
                         />
+
+                        <FormItem>
+                            <FormLabel>Documentation Files (images/videos)</FormLabel>
+                            <FormControl>
+                                <div className="flex flex-col gap-2">
+                                    <Input
+                                        type="file"
+                                        accept="image/*,video/*"
+                                        multiple
+                                        onChange={handleDocumentationUpload}
+                                    />
+                                    {documentationFiles.length > 0 && (
+                                        <div className="text-sm text-muted-foreground">
+                                            {documentationFiles.length} file(s) selected
+                                        </div>
+                                    )}
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
 
                         <FormItem>
                             <FormLabel>Project Image</FormLabel>

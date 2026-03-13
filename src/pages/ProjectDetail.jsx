@@ -136,6 +136,37 @@ const ProjectDetail = () => {
                                 )}
                             </div>
                         </div>
+
+                        {project.documentation_urls && project.documentation_urls.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-xl font-bold font-mono uppercase tracking-wider">Documentation</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {project.documentation_urls.map((url, index) => {
+                                        const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
+                                        return (
+                                            <div key={index} className="aspect-video relative overflow-hidden rounded-lg border-2 border-foreground">
+                                                {isVideo ? (
+                                                    <video
+                                                        src={url}
+                                                        controls
+                                                        className="object-cover w-full h-full"
+                                                    >
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                ) : (
+                                                    <img
+                                                        src={url}
+                                                        alt={`Documentation ${index + 1}`}
+                                                        loading="lazy"
+                                                        className="object-cover w-full h-full"
+                                                    />
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </motion.div>
             </div>
