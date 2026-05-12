@@ -25,14 +25,10 @@ const PageTransition = ({ children }) => {
   return (
     <div
       className={`page-transition ${
-        transitionStage === "fadeOut"
-          ? "opacity-0 translate-y-2"
-          : transitionStage === "fadeIn"
-          ? "opacity-100 translate-y-0"
-          : "opacity-100 translate-y-0"
+        transitionStage === "fadeOut" ? "opacity-0" : "opacity-100"
       }`}
       style={{
-        transition: "opacity 0.4s ease, transform 0.4s ease",
+        transition: "opacity 0.4s ease",
       }}
       onTransitionEnd={handleTransitionEnd}
     >
