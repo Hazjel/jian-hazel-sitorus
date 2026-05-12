@@ -81,6 +81,72 @@ const HeroSection = () => {
     return () => ctx.revert();
   }, []);
 
+  // Typing animation for subtitle
+  useEffect(() => {
+    const phrases = [
+      "Software Enthusiast",
+      "AI & DS Enthusiast",
+      "Fullstack Developer",
+      "Problem Solver",
+    ];
+
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let timeout;
+
+    const typedEl = document.querySelector(".hero-typed-text");
+    const cursorEl = document.querySelector(".hero-typed-cursor");
+
+    if (!typedEl || !cursorEl) return;
+
+    // Cursor blink animation
+    gsap.to(cursorEl, {
+      opacity: 0,
+      repeat: -1,
+      yoyo: true,
+      duration: 0.6,
+      ease: "steps(1)",
+    });
+
+    const type = () => {
+      const currentPhrase = phrases[phraseIndex];
+
+      if (!isDeleting) {
+        charIndex++;
+        typedEl.textContent = currentPhrase.slice(0, charIndex);
+
+        if (charIndex === currentPhrase.length) {
+          isDeleting = true;
+          timeout = setTimeout(type, 2500);
+          return;
+        }
+        timeout = setTimeout(type, 80 + Math.random() * 40);
+      } else {
+        charIndex--;
+        typedEl.textContent = currentPhrase.slice(0, charIndex);
+
+        if (charIndex === 0) {
+          isDeleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          timeout = setTimeout(type, 500);
+          return;
+        }
+        timeout = setTimeout(type, 40 + Math.random() * 20);
+      }
+    };
+
+    // Start typing after hero animation completes
+    const startDelay = setTimeout(() => {
+      type();
+    }, 3200);
+
+    return () => {
+      clearTimeout(timeout);
+      clearTimeout(startDelay);
+    };
+  }, []);
+
   return (
     <section
       id="home"
@@ -148,7 +214,8 @@ const HeroSection = () => {
           <div className="flex items-center gap-4">
             <span className="w-10 h-px bg-white/30" />
             <p className="text-white/60 text-[11px] md:text-xs tracking-[0.4em] uppercase font-light">
-              Software Developer
+              <span className="hero-typed-text inline-block min-w-[12ch] text-center" />
+              <span className="hero-typed-cursor inline-block w-px h-[1em] bg-white/60 ml-1 align-middle" />
             </p>
             <span className="w-10 h-px bg-white/30" />
           </div>
