@@ -1,89 +1,12 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { supabase } from "@/integrations/supabase/client";
 
-// Helper function to map skill names to Devicon URLs
-const getIconUrl = (skillName) => {
-  const nameMap = {
-    "html & css": "html5",
-    "html": "html5",
-    "css": "css3",
-    "javascript": "javascript",
-    "js": "javascript",
-    "typescript": "typescript",
-    "react": "react",
-    "react.js": "react",
-    "next.js": "nextjs",
-    "vue": "vuejs",
-    "tailwind css": "tailwindcss",
-    "tailwind": "tailwindcss",
-    "node.js": "nodejs",
-    "express": "express",
-    "laravel": "laravel",
-    "php": "php",
-    "python": "python",
-    "java": "java",
-    "go": "go",
-    "mysql": "mysql",
-    "postgresql": "postgresql",
-    "mongodb": "mongodb",
-    "firebase": "firebase",
-    "supabase": "supabase",
-    "git": "git",
-    "git & github": "github",
-    "github": "github",
-    "docker": "docker",
-    "figma": "figma",
-    "c++": "cplusplus",
-    "c#": "csharp",
-    "aws": "amazonwebservices",
-  };
-
-  const normalized = skillName.toLowerCase().trim();
-  const slug = nameMap[normalized] || normalized.replace(/[^a-z0-9]/g, '');
-
-  return `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${slug}/${slug}-original.svg`;
-};
-
-const SkillCategory = ({ category, categorySkills, index, isInView }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
-      className="mb-10 last:mb-0"
-    >
-      <h3 className="text-xl font-bold mb-4 text-foreground border-b border-muted-foreground/20 pb-2">
-        {category}
-      </h3>
-      <div className="flex flex-wrap gap-3">
-        {categorySkills.map((skill) => (
-          <span
-            key={skill.id}
-            className="flex items-center gap-2 px-4 py-2 bg-background border border-foreground/30 rounded-md text-sm font-medium hover:border-accent hover:text-accent transition-colors shadow-sm"
-          >
-            <img
-              src={getIconUrl(skill.name)}
-              alt=""
-              className="w-4 h-4 object-contain"
-              onError={(e) => {
-                // Remove the image if the icon is not found on devicon
-                e.target.style.display = 'none';
-              }}
-              loading="lazy"
-            />
-            {skill.name}
-          </span>
-        ))}
-      </div>
-    </motion.div>
-  );
-};
+gsap.registerPlugin(ScrollTrigger);
 
 const SkillsSection = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const sectionRef = useRef(null);
   const [groupedSkills, setGroupedSkills] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -98,7 +21,6 @@ const SkillsSection = () => {
 
         if (error) throw error;
 
-        // Group skills by category
         const grouped = (data || []).reduce((acc, skill) => {
           if (!acc[skill.category]) {
             acc[skill.category] = [];
@@ -118,65 +40,123 @@ const SkillsSection = () => {
     fetchSkills();
   }, []);
 
+  useEffect(() => {
+    if (loading) return;
+
+    const ctx = gsap.context(() => {
+      // Title reveal
+      gsap.fromTo(
+        ".skills-title",
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Category blocks stagger
+      gsap.fromTo(
+        ".skill-category",
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+          stagger: 0.15,
+          scrollTrigger: {
+            trigger: ".skills-grid",
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Individual skill items
+      gsap.fromTo(
+        ".skill-item",
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: 0.03,
+          scrollTrigger: {
+            trigger: ".skills-grid",
+            start: "top 70%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [loading]);
+
   const categories = Object.keys(groupedSkills);
 
   return (
-    <section id="skills" className="py-24 bg-muted border-b-2 border-foreground" ref={ref}>
-      <div className="container mx-auto px-6">
-        <div className="grid lg:grid-cols-12 gap-12">
-          {/* Section Label */}
-          <div className="lg:col-span-3">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5 }}
-            >
-              <span className="text-accent font-mono text-sm">03</span>
-              <h2 className="text-headline mt-2">Tech Stack</h2>
-              <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
-                Technologies, frameworks, and tools I use to build solutions.
-              </p>
-            </motion.div>
-          </div>
+    <section
+      id="skills"
+      ref={sectionRef}
+      className="relative py-32 md:py-48 bg-[#050505]"
+    >
+      {/* Subtle gradient accent */}
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-          {/* Skills List */}
-          <div className="lg:col-span-9">
-            {loading ? (
-              <div className="text-center text-muted-foreground py-10">Loading tech stack...</div>
-            ) : categories.length === 0 ? (
-              <div className="text-center text-muted-foreground py-10">
-                No skills listed yet.
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-x-12">
-                {/* Divide categories roughly in half across two columns if possible */}
-                <div>
-                  {categories.slice(0, Math.ceil(categories.length / 2)).map((category, index) => (
-                    <SkillCategory
-                      key={category}
-                      category={category}
-                      categorySkills={groupedSkills[category]}
-                      index={index}
-                      isInView={isInView}
-                    />
-                  ))}
-                </div>
-                <div>
-                  {categories.slice(Math.ceil(categories.length / 2)).map((category, index) => (
-                    <SkillCategory
-                      key={category}
-                      category={category}
-                      categorySkills={groupedSkills[category]}
-                      index={index + Math.ceil(categories.length / 2)}
-                      isInView={isInView}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        {/* Section Header */}
+        <div className="mb-20 md:mb-28">
+          <span className="skills-title block text-white/30 text-xs tracking-[0.5em] uppercase mb-4">
+            Tech Stack
+          </span>
+          <h2 className="skills-title font-display text-[clamp(2rem,5vw,4rem)] leading-[1.1] tracking-[-0.03em] text-white font-light max-w-3xl">
+            Technologies I use to bring ideas to life.
+          </h2>
         </div>
+
+        {/* Skills Grid */}
+        {loading ? (
+          <div className="text-white/30 text-sm tracking-widest uppercase">
+            Loading...
+          </div>
+        ) : categories.length === 0 ? (
+          <div className="text-white/30 text-sm tracking-widest uppercase">
+            No skills listed yet.
+          </div>
+        ) : (
+          <div className="skills-grid grid md:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
+            {categories.map((category) => (
+              <div key={category} className="skill-category">
+                <h3 className="text-white/50 text-[11px] tracking-[0.4em] uppercase mb-6 pb-3 border-b border-white/10">
+                  {category}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {groupedSkills[category].map((skill) => (
+                    <span
+                      key={skill.id}
+                      className="skill-item inline-block px-4 py-2 text-sm text-white/60 border border-white/10 hover:border-white/40 hover:text-white/90 transition-all duration-500 cursor-default"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Bottom line */}
+      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </section>
   );
 };

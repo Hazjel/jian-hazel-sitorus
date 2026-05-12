@@ -1,103 +1,140 @@
-import { motion } from "framer-motion";
-import { ArrowDown, ArrowRight } from "lucide-react";
-import { Button } from "./ui/button";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import profilePhoto from "@/assets/profile-photo.jpeg";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const HeroSection = () => {
+  const sectionRef = useRef(null);
+  const headingRef = useRef(null);
+  const subRef = useRef(null);
+  const imageRef = useRef(null);
+  const overlayRef = useRef(null);
+  const scrollIndicatorRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Initial entrance animation
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+      tl.fromTo(
+        overlayRef.current,
+        { scaleY: 1 },
+        { scaleY: 0, duration: 1.8, transformOrigin: "top" }
+      )
+        .fromTo(
+          imageRef.current,
+          { scale: 1.3, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 2 },
+          "-=1.2"
+        )
+        .fromTo(
+          ".hero-line",
+          { y: 120, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.4, stagger: 0.15 },
+          "-=1.4"
+        )
+        .fromTo(
+          subRef.current,
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.2 },
+          "-=0.8"
+        )
+        .fromTo(
+          scrollIndicatorRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 1 },
+          "-=0.4"
+        );
+
+      // Parallax on scroll
+      gsap.to(imageRef.current, {
+        yPercent: 20,
+        scale: 1.1,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.5,
+        },
+      });
+
+      gsap.to(headingRef.current, {
+        yPercent: -30,
+        opacity: 0.3,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "80% top",
+          scrub: 1,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center relative pt-16 border-b-2 border-foreground"
+      ref={sectionRef}
+      className="hero-section relative h-screen w-full overflow-hidden flex items-center justify-center"
     >
-      {/* Swiss Grid Background */}
-      <div className="absolute inset-0 swiss-grid opacity-50" />
+      {/* Background Image with Parallax */}
+      <div className="absolute inset-0 z-0">
+        <img
+          ref={imageRef}
+          src={profilePhoto}
+          alt="Jian Hazel Sitorus"
+          className="w-full h-full object-cover object-[center_20%] opacity-0"
+          style={{ filter: "brightness(0.35) contrast(1.1)" }}
+        />
+      </div>
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-8">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-[2px] bg-accent" />
-                <span className="text-sm font-mono uppercase tracking-widest">
-                  Software Developer
-                </span>
-              </div>
+      {/* Reveal Overlay */}
+      <div
+        ref={overlayRef}
+        className="absolute inset-0 z-10 bg-[#0a0a0a]"
+        style={{ transformOrigin: "top" }}
+      />
 
-              <h1 className="text-display mb-8">
-                <span className="block">Jian Hazel</span>
-                <span className="block text-muted-foreground">Sitorus</span>
-              </h1>
+      {/* Grain Texture Overlay */}
+      <div className="absolute inset-0 z-20 opacity-[0.03] pointer-events-none grain-texture" />
 
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mb-12 leading-relaxed">
-                Informatics student passionate about software development
-                and artificial intelligence.
-              </p>
-
-              <div className="flex flex-wrap gap-4">
-                <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.98 }}>
-                  <Button
-                    size="lg"
-                    className="bg-foreground text-background hover:bg-foreground/90 font-medium uppercase tracking-wide btn-press group"
-                    asChild
-                  >
-                    <a href="#projects" className="flex items-center gap-2">
-                      View Work
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                    </a>
-                  </Button>
-                </motion.div>
-                <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.98 }}>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-2 border-foreground text-foreground hover:bg-foreground hover:text-background font-medium uppercase tracking-wide btn-press"
-                    asChild
-                  >
-                    <a href="#contact">Contact</a>
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
-
-          <div className="lg:col-span-4 hidden lg:block">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="relative"
-            >
-              <div className="text-[200px] font-bold text-muted leading-none select-none">
-                01
-              </div>
-              <div className="absolute top-1/2 right-0 w-24 h-24 bg-accent" />
-            </motion.div>
-          </div>
+      {/* Content */}
+      <div ref={headingRef} className="relative z-30 text-center px-6">
+        <div className="overflow-hidden mb-2">
+          <h1 className="hero-line font-display text-[clamp(3rem,12vw,10rem)] leading-[0.85] tracking-[-0.04em] text-white font-light">
+            Jian Hazel
+          </h1>
+        </div>
+        <div className="overflow-hidden">
+          <h1 className="hero-line font-display text-[clamp(3rem,12vw,10rem)] leading-[0.85] tracking-[-0.04em] text-white/60 font-light italic">
+            Sitorus
+          </h1>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="absolute bottom-12 left-6"
-        >
-          <a
-            href="#about"
-            className="flex items-center gap-3 text-sm font-mono uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <span>Scroll</span>
-            <motion.div
-              animate={{ y: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <ArrowDown size={16} />
-            </motion.div>
-          </a>
-        </motion.div>
+        <div ref={subRef} className="mt-8 md:mt-12">
+          <p className="text-white/50 text-sm md:text-base tracking-[0.3em] uppercase font-light">
+            Software Developer &mdash; Informatics
+          </p>
+        </div>
       </div>
+
+      {/* Scroll Indicator */}
+      <div
+        ref={scrollIndicatorRef}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3"
+      >
+        <span className="text-white/40 text-[10px] tracking-[0.4em] uppercase">
+          Scroll
+        </span>
+        <div className="w-px h-12 bg-gradient-to-b from-white/40 to-transparent scroll-line" />
+      </div>
+
+      {/* Vignette */}
+      <div className="absolute inset-0 z-20 pointer-events-none vignette" />
     </section>
   );
 };
