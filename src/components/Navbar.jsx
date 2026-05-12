@@ -30,8 +30,8 @@ const Navbar = () => {
     // Entrance animation
     gsap.fromTo(
       navRef.current,
-      { y: -40, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.2, ease: "power3.out", delay: 2.2 }
+      { y: -20 },
+      { y: 0, duration: 1, ease: "power3.out", delay: 2.2 }
     );
 
     const handleScroll = () => {
@@ -83,7 +83,6 @@ const Navbar = () => {
             ? "bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5"
             : "bg-transparent"
         }`}
-        style={{ opacity: 0 }}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="flex items-center justify-between h-20">
