@@ -11,7 +11,6 @@ const navItems = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -43,12 +42,6 @@ const Navbar = () => {
       setScrollProgress(progress);
       setScrolled(currentScrollY > 50);
 
-      // Hide/show on scroll direction
-      if (currentScrollY > lastScrollY.current && currentScrollY > 200) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
       lastScrollY.current = currentScrollY;
 
       // Active section detection
@@ -86,8 +79,6 @@ const Navbar = () => {
       <nav
         ref={navRef}
         className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          hidden ? "-translate-y-full" : "translate-y-0"
-        } ${
           scrolled
             ? "bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5"
             : "bg-transparent"
