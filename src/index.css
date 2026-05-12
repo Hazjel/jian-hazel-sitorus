@@ -217,6 +217,93 @@
   overflow: hidden;
 }
 
+/* ─── Hero Animated Gradient ─── */
+.hero-gradient-animate {
+  background: linear-gradient(
+    135deg,
+    #0a0a0a 0%,
+    #0f0a1e 20%,
+    #0a0a0a 40%,
+    #0a1520 60%,
+    #0a0a0a 80%,
+    #120a18 100%
+  );
+  background-size: 400% 400%;
+  animation: heroGradientShift 20s ease-in-out infinite;
+}
+
+@keyframes heroGradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+/* ─── Floating Blobs ─── */
+.animate-float-slow {
+  animation: floatSlow 18s ease-in-out infinite;
+}
+
+.animate-float-slow-reverse {
+  animation: floatSlowReverse 22s ease-in-out infinite;
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(3%, -5%) scale(1.05);
+  }
+  66% {
+    transform: translate(-2%, 3%) scale(0.95);
+  }
+}
+
+@keyframes floatSlowReverse {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-4%, 3%) scale(0.95);
+  }
+  66% {
+    transform: translate(2%, -4%) scale(1.05);
+  }
+}
+
+/* ─── Floating Particles ─── */
+.animate-particle-float {
+  animation: particleFloat 10s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.15;
+  }
+  25% {
+    transform: translateY(-20px) translateX(5px);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-10px) translateX(-3px);
+    opacity: 0.1;
+  }
+  75% {
+    transform: translateY(-25px) translateX(8px);
+    opacity: 0.25;
+  }
+}
+
 /* ─── Lenis Smooth Scroll ─── */
 html.lenis,
 html.lenis body {
