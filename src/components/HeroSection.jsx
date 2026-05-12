@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import profilePhoto from "@/assets/profile-photo.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,13 +8,11 @@ const HeroSection = () => {
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
   const subRef = useRef(null);
-  const imageRef = useRef(null);
   const overlayRef = useRef(null);
   const scrollIndicatorRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Initial entrance animation
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
       tl.fromTo(
@@ -24,14 +21,14 @@ const HeroSection = () => {
         { scaleY: 0, duration: 1.8, transformOrigin: "top" }
       )
         .fromTo(
-          imageRef.current,
-          { scale: 1.3, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 2 },
-          "-=1.2"
+          ".hero-gradient-bg",
+          { opacity: 0 },
+          { opacity: 1, duration: 2 },
+          "-=1.4"
         )
         .fromTo(
           ".hero-line",
-          { y: 120, opacity: 0 },
+          { y: 100, opacity: 0 },
           { y: 0, opacity: 1, duration: 1.4, stagger: 0.15 },
           "-=1.4"
         )
@@ -48,27 +45,22 @@ const HeroSection = () => {
           "-=0.8"
         )
         .fromTo(
+          ".hero-particle",
+          { opacity: 0 },
+          { opacity: 1, duration: 2, stagger: 0.05 },
+          "-=1"
+        )
+        .fromTo(
           scrollIndicatorRef.current,
           { opacity: 0 },
           { opacity: 1, duration: 1 },
           "-=0.4"
         );
 
-      // Parallax on scroll
-      gsap.to(imageRef.current, {
-        yPercent: 20,
-        scale: 1.1,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.5,
-        },
-      });
-
+      // Parallax heading on scroll
       gsap.to(headingRef.current, {
         yPercent: -30,
-        opacity: 0.3,
+        opacity: 0.2,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
@@ -81,22 +73,99 @@ const HeroSection = () => {
     return () => ctx.revert();
   }, []);
 
+  // Typing animation for subtitle
+  useEffect(() => {
+    const phrases = [
+      "Software Enthusiast",
+      "AI & DS Enthusiast",
+      "Fullstack Developer",
+      "Problem Solver",
+    ];
+
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let timeout;
+
+    const typedEl = document.querySelector(".hero-typed-text");
+    const cursorEl = document.querySelector(".hero-typed-cursor");
+
+    if (!typedEl || !cursorEl) return;
+
+    // Cursor blink animation
+    gsap.to(cursorEl, {
+      opacity: 0,
+      repeat: -1,
+      yoyo: true,
+      duration: 0.6,
+      ease: "steps(1)",
+    });
+
+    const type = () => {
+      const currentPhrase = phrases[phraseIndex];
+
+      if (!isDeleting) {
+        charIndex++;
+        typedEl.textContent = currentPhrase.slice(0, charIndex);
+
+        if (charIndex === currentPhrase.length) {
+          isDeleting = true;
+          timeout = setTimeout(type, 2500);
+          return;
+        }
+        timeout = setTimeout(type, 80 + Math.random() * 40);
+      } else {
+        charIndex--;
+        typedEl.textContent = currentPhrase.slice(0, charIndex);
+
+        if (charIndex === 0) {
+          isDeleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          timeout = setTimeout(type, 500);
+          return;
+        }
+        timeout = setTimeout(type, 40 + Math.random() * 20);
+      }
+    };
+
+    const startDelay = setTimeout(() => {
+      type();
+    }, 3200);
+
+    return () => {
+      clearTimeout(timeout);
+      clearTimeout(startDelay);
+    };
+  }, []);
+
   return (
     <section
       id="home"
       ref={sectionRef}
       className="hero-section relative h-screen w-full overflow-hidden flex items-center justify-center"
     >
-      {/* Background Image with Parallax */}
-      <div className="absolute inset-0 z-0">
-        <img
-          ref={imageRef}
-          src={profilePhoto}
-          alt="Jian Hazel Sitorus"
-          className="w-full h-full object-cover object-[center_20%] opacity-0"
-          style={{ filter: "brightness(0.3) contrast(1.1)" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/60 via-transparent to-[#0a0a0a]" />
+      {/* Animated Gradient Background */}
+      <div className="hero-gradient-bg absolute inset-0 z-0 opacity-0">
+        <div className="absolute inset-0 hero-gradient-animate" />
+        <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vw] rounded-full bg-[#1a1040]/40 blur-[120px] animate-float-slow" />
+        <div className="absolute bottom-1/4 right-1/4 w-[40vw] h-[40vw] rounded-full bg-[#0c1a2e]/50 blur-[100px] animate-float-slow-reverse" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[30vw] rounded-full bg-[#1c1c1c]/30 blur-[80px]" />
+      </div>
+
+      {/* Floating Particles */}
+      <div className="absolute inset-0 z-[5] overflow-hidden pointer-events-none">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            key={i}
+            className="hero-particle absolute w-[2px] h-[2px] bg-white/20 rounded-full animate-particle-float"
+            style={{
+              left: `${8 + Math.random() * 84}%`,
+              top: `${5 + Math.random() * 90}%`,
+              animationDelay: `${Math.random() * 8}s`,
+              animationDuration: `${8 + Math.random() * 12}s`,
+            }}
+          />
+        ))}
       </div>
 
       {/* Reveal Overlay */}
@@ -133,13 +202,13 @@ const HeroSection = () => {
 
       {/* Content */}
       <div ref={headingRef} className="relative z-30 text-center px-6 max-w-[90rem]">
-        <div className="overflow-hidden mb-1 md:mb-2">
-          <h1 className="hero-line font-display text-[clamp(3.5rem,13vw,11rem)] leading-[0.9] tracking-[-0.04em] text-white font-light">
+        <div className="py-3 mb-1 md:mb-3">
+          <h1 className="hero-line font-display text-[clamp(3rem,11vw,9rem)] leading-[1.1] tracking-[-0.03em] text-white font-light">
             Jian Hazel
           </h1>
         </div>
-        <div className="overflow-hidden">
-          <h1 className="hero-line font-display text-[clamp(3.5rem,13vw,11rem)] leading-[0.9] tracking-[-0.04em] text-white/50 font-light italic">
+        <div className="py-3">
+          <h1 className="hero-line font-display text-[clamp(3rem,11vw,9rem)] leading-[1.1] tracking-[-0.03em] text-white/50 font-light italic">
             Sitorus
           </h1>
         </div>
@@ -148,7 +217,8 @@ const HeroSection = () => {
           <div className="flex items-center gap-4">
             <span className="w-10 h-px bg-white/30" />
             <p className="text-white/60 text-[11px] md:text-xs tracking-[0.4em] uppercase font-light">
-              Software Developer
+              <span className="hero-typed-text inline-block min-w-[12ch] text-center" />
+              <span className="hero-typed-cursor inline-block w-px h-[1em] bg-white/60 ml-1 align-middle" />
             </p>
             <span className="w-10 h-px bg-white/30" />
           </div>

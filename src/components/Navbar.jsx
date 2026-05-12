@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 
 const navItems = [
@@ -11,31 +11,37 @@ const navItems = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [scrollProgress, setScrollProgress] = useState(0);
   const navRef = useRef(null);
   const lastScrollY = useRef(0);
+
+  const scrollToSection = useCallback((e, href) => {
+    e.preventDefault();
+    const id = href.replace("#", "");
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
 
   useEffect(() => {
     // Entrance animation
     gsap.fromTo(
       navRef.current,
-      { y: -40, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.2, ease: "power3.out", delay: 2.2 }
+      { y: -20 },
+      { y: 0, duration: 1, ease: "power3.out", delay: 2.2 }
     );
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (currentScrollY / docHeight) * 100 : 0;
 
+      setScrollProgress(progress);
       setScrolled(currentScrollY > 50);
 
-      // Hide/show on scroll direction
-      if (currentScrollY > lastScrollY.current && currentScrollY > 200) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
       lastScrollY.current = currentScrollY;
 
       // Active section detection
@@ -73,19 +79,17 @@ const Navbar = () => {
       <nav
         ref={navRef}
         className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          hidden ? "-translate-y-full" : "translate-y-0"
-        } ${
           scrolled
             ? "bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5"
             : "bg-transparent"
         }`}
-        style={{ opacity: 0 }}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <a
               href="#home"
+              onClick={(e) => scrollToSection(e, "#home")}
               className="flex items-center gap-2 text-white/90 font-light hover:text-white transition-colors duration-500 group"
             >
               <span className="font-display text-xl tracking-[-0.02em]">
@@ -100,6 +104,7 @@ const Navbar = () => {
                 <a
                   key={item.name}
                   href={item.href}
+                  onClick={(e) => scrollToSection(e, item.href)}
                   className={`group relative flex items-baseline gap-1.5 text-[11px] tracking-[0.25em] uppercase transition-colors duration-500 ${
                     activeSection === item.href.replace("#", "")
                       ? "text-white"
@@ -126,6 +131,7 @@ const Navbar = () => {
             {/* Desktop CTA */}
             <a
               href="#contact"
+              onClick={(e) => scrollToSection(e, "#contact")}
               className="hidden md:inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-white/60 hover:text-white transition-colors duration-500 group"
             >
               <span className="w-1.5 h-1.5 bg-emerald-400/70 rounded-full animate-pulse" />
@@ -151,6 +157,14 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+
+        {/* Scroll Progress Bar */}
+        <div className="absolute bottom-0 left-0 w-full h-px bg-transparent">
+          <div
+            className="h-full bg-white/30"
+            style={{ width: `${scrollProgress}%`, transition: "width 0.1s linear" }}
+          />
+        </div>
       </nav>
 
       {/* Mobile Menu Overlay */}
@@ -167,7 +181,10 @@ const Navbar = () => {
               <a
                 key={item.name}
                 href={item.href}
-                onClick={() => setIsOpen(false)}
+                onClick={(e) => {
+                  scrollToSection(e, item.href);
+                  setIsOpen(false);
+                }}
                 className="flex items-baseline gap-4 group"
                 style={{
                   transitionDelay: isOpen ? `${150 + index * 80}ms` : "0ms",

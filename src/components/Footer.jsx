@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Github, Linkedin, Instagram, ArrowUp } from "lucide-react";
@@ -8,6 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 const Footer = () => {
   const footerRef = useRef(null);
   const currentYear = new Date().getFullYear();
+  const [time, setTime] = useState("");
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -18,6 +19,25 @@ const Footer = () => {
     { icon: Linkedin, href: "https://linkedin.com/in/jianhazel", label: "LinkedIn" },
     { icon: Instagram, href: "https://instagram.com/jihazel_", label: "Instagram" },
   ];
+
+  // Real-time clock (WIB = UTC+7)
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const wib = new Intl.DateTimeFormat("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZone: "Asia/Jakarta",
+      }).format(now);
+      setTime(wib);
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -68,10 +88,7 @@ const Footer = () => {
           <p className="text-white/30 text-[11px] tracking-[0.4em] uppercase mb-6">
             Let&apos;s Connect
           </p>
-          <a
-            href="mailto:duojhs222@gmail.com"
-            className="group inline-block"
-          >
+          <a href="mailto:duojhs222@gmail.com" className="group inline-block">
             <span className="font-display text-[clamp(2rem,7vw,6rem)] leading-[1] tracking-[-0.03em] text-white/90 font-light hover:text-white transition-colors duration-700 italic">
               duojhs222@gmail.com
             </span>
@@ -87,9 +104,7 @@ const Footer = () => {
           {/* Logo & Copyright */}
           <div className="footer-item flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
             <div className="flex items-center gap-2">
-              <span className="font-display text-xl text-white/80 tracking-[-0.02em]">
-                JHS
-              </span>
+              <span className="font-display text-xl text-white/80 tracking-[-0.02em]">JHS</span>
               <span className="w-1 h-1 bg-white/30 rounded-full" />
             </div>
             <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase">
@@ -97,26 +112,19 @@ const Footer = () => {
             </span>
           </div>
 
+          {/* Local Time */}
+          <div className="footer-item flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase text-white/40">
+            <span className="w-1.5 h-1.5 bg-emerald-400/60 rounded-full animate-pulse" />
+            <span>Bandung</span>
+            <span className="text-white/60 font-mono tracking-wider">{time}</span>
+            <span className="text-white/20">WIB</span>
+          </div>
+
           {/* Nav Links */}
           <div className="footer-item flex items-center gap-6 md:gap-8 text-[10px] tracking-[0.3em] uppercase">
-            <a
-              href="#about"
-              className="text-white/40 hover:text-white/80 transition-colors duration-500"
-            >
-              About
-            </a>
-            <a
-              href="#projects"
-              className="text-white/40 hover:text-white/80 transition-colors duration-500"
-            >
-              Work
-            </a>
-            <a
-              href="#contact"
-              className="text-white/40 hover:text-white/80 transition-colors duration-500"
-            >
-              Contact
-            </a>
+            <a href="#about" className="text-white/40 hover:text-white/80 transition-colors duration-500">About</a>
+            <a href="#projects" className="text-white/40 hover:text-white/80 transition-colors duration-500">Work</a>
+            <a href="#contact" className="text-white/40 hover:text-white/80 transition-colors duration-500">Contact</a>
           </div>
 
           {/* Social Links */}
