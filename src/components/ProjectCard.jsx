@@ -55,15 +55,15 @@ const ProjectCard = ({ project, index }) => {
     <div ref={cardRef} className="project-card group relative">
       {/* Project Image */}
       <Link to={`/project/${project.slug}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-white/[0.02] border border-white/5 mb-7">
+        <div className="relative aspect-video overflow-hidden bg-white/[0.02] border border-white/5 mb-7">
           {project.image_url ? (
             <img
               ref={imageRef}
               src={project.image_url}
               alt={project.title}
               loading="lazy"
-              className="absolute inset-0 w-full h-[115%] object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
-              style={{ filter: "brightness(0.85) contrast(1.05)" }}
+              className="absolute inset-0 w-full h-[110%] object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]"
+              style={{ filter: "brightness(0.9) contrast(1.05)" }}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-white/20 text-[10px] tracking-[0.3em] uppercase">
