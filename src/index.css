@@ -1,75 +1,81 @@
+/* Premium Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════
+   CINEMATIC LUXURY PORTFOLIO — Global Styles
+   ═══════════════════════════════════════════ */
+
 @layer base {
   :root {
-    /* Swiss Design: High contrast black & white with red accent */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
 
-    --card: 0 0% 98%;
-    --card-foreground: 0 0% 0%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 4%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 0% 92%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 0 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 95%;
 
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 60% 50%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 0 0% 0%;
-    --input: 0 0% 0%;
-    --ring: 0 0% 0%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 40%;
 
-    --radius: 0;
+    --radius: 0px;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 0%;
-    --sidebar-primary: 0 0% 0%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 96%;
-    --sidebar-accent-foreground: 0 0% 0%;
-    --sidebar-border: 0 0% 0%;
-    --sidebar-ring: 0 0% 0%;
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 0 0% 95%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 40%;
   }
 
   .dark {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
 
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 100%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 4%;
 
     --secondary: 0 0% 10%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 0 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 95%;
 
-    --border: 0 0% 100%;
-    --input: 0 0% 100%;
-    --ring: 0 0% 100%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 40%;
   }
 }
 
@@ -79,107 +85,141 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Space Grotesk', sans-serif;
-    font-feature-settings: "ss01", "ss02";
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    @apply bg-[#0a0a0a] text-white antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto; /* Lenis handles smooth scroll */
+  }
+
+  /* Premium Display Font */
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
   }
 
   ::selection {
-    background: hsl(0 100% 50%);
-    color: hsl(0 0% 100%);
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+
+  /* Hide scrollbar for cinematic feel */
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+
+  html {
+    scrollbar-width: none;
+  }
+}
+
+@layer components {
+  /* ─── Vignette Effect ─── */
+  .vignette {
+    background: radial-gradient(
+      ellipse at center,
+      transparent 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+  }
+
+  /* ─── Grain Texture ─── */
+  .grain-texture {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* ─── Scroll Indicator Line Animation ─── */
+  .scroll-line {
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% {
+      opacity: 0.4;
+      height: 48px;
+    }
+    50% {
+      opacity: 0.8;
+      height: 60px;
+    }
+  }
+
+  /* ─── Cinematic Portfolio Container ─── */
+  .cinematic-portfolio {
+    position: relative;
+  }
+
+  .cinematic-portfolio * {
+    cursor: none;
+  }
+
+  @media (max-width: 768px) {
+    .cinematic-portfolio,
+    .cinematic-portfolio * {
+      cursor: auto !important;
+    }
   }
 }
 
 @layer utilities {
-  /* Swiss Grid Lines */
-  .swiss-grid {
-    background-image: 
-      linear-gradient(to right, hsl(var(--border) / 0.1) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(var(--border) / 0.1) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-
-  /* Strong underline for links */
-  .swiss-link {
-    @apply relative inline-block;
-    text-decoration: none;
-  }
-  
-  .swiss-link::after {
-    content: '';
-    @apply absolute w-full h-[2px] bottom-0 left-0 bg-accent origin-left transition-transform duration-200;
-    transform: scaleX(0);
-  }
-  
-  .swiss-link:hover::after {
-    transform: scaleX(1);
-  }
-
-  /* Geometric accent */
-  .swiss-accent {
-    @apply relative;
-  }
-
-  .swiss-accent::before {
-    content: '';
-    @apply absolute -left-4 top-0 w-1 h-full bg-accent;
-  }
-
-  /* Number styling */
-  .swiss-number {
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600;
-    @apply text-accent;
-  }
-
-  /* Horizontal rule */
-  .swiss-divider {
-    @apply w-full h-[2px] bg-foreground;
-  }
-
-  /* Text utilities */
+  /* ─── Text Utilities ─── */
   .text-display {
-    @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-none;
+    @apply text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-none;
+    font-family: 'Playfair Display', Georgia, serif;
   }
 
   .text-headline {
-    @apply text-3xl md:text-4xl font-bold tracking-tight;
+    @apply text-3xl md:text-4xl font-light tracking-tight;
+    font-family: 'Playfair Display', Georgia, serif;
   }
 
   .text-subhead {
-    @apply text-lg md:text-xl font-medium tracking-tight;
+    @apply text-lg md:text-xl font-light tracking-tight;
   }
 
-  .text-mono {
-    font-family: 'IBM Plex Mono', monospace;
+  /* ─── Smooth transitions ─── */
+  .transition-cinematic {
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Hover effects - minimal */
-  .hover-underline {
-    @apply relative;
+  /* ─── Image hover zoom ─── */
+  .img-hover-zoom {
+    overflow: hidden;
   }
 
-  .hover-underline::after {
-    content: '';
-    @apply absolute bottom-0 left-0 w-0 h-[2px] bg-foreground transition-all duration-300;
+  .img-hover-zoom img {
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .hover-underline:hover::after {
-    @apply w-full;
+  .img-hover-zoom:hover img {
+    transform: scale(1.05);
   }
+}
 
-  /* Button press */
-  .btn-press {
-    @apply transition-transform duration-100 active:scale-95;
-  }
+/* ─── Lenis Smooth Scroll ─── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
