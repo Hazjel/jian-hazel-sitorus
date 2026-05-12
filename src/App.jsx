@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/use-theme";
 import Index from "./pages/Index";
+import Work from "./pages/Work";
 import ProjectDetail from "./pages/ProjectDetail";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -31,7 +32,10 @@ const SmoothScroll = ({ children }) => {
 
   useEffect(() => {
     // Only enable Lenis on the main portfolio page
-    const isPortfolioPage = location.pathname === "/" || location.pathname.startsWith("/project/");
+    const isPortfolioPage =
+      location.pathname === "/" ||
+      location.pathname === "/work" ||
+      location.pathname.startsWith("/project/");
 
     if (!isPortfolioPage) return;
 
@@ -74,6 +78,7 @@ const App = () => (
           <SmoothScroll>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/work" element={<Work />} />
               <Route path="/project/:slug" element={<ProjectDetail />} />
               <Route path="/login" element={<Login />} />
               <Route
