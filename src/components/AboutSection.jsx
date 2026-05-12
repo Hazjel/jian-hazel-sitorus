@@ -1,11 +1,14 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import profilePhoto from "@/assets/profile-photo.jpeg";
 
+gsap.registerPlugin(ScrollTrigger);
+
 const AboutSection = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const sectionRef = useRef(null);
+  const imageContainerRef = useRef(null);
+  const imageRef = useRef(null);
 
   const info = [
     { label: "Education", value: "Telkom University" },
@@ -14,77 +17,159 @@ const AboutSection = () => {
     { label: "Year", value: "2023 — Present" },
   ];
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Section title reveal
+      gsap.fromTo(
+        ".about-title-line",
+        { y: 80, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Text paragraphs fade in
+      gsap.fromTo(
+        ".about-text",
+        { y: 50, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+          stagger: 0.2,
+          scrollTrigger: {
+            trigger: ".about-text-container",
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Image expansion on scroll
+      gsap.fromTo(
+        imageContainerRef.current,
+        { clipPath: "inset(20% 20% 20% 20%)" },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          ease: "none",
+          scrollTrigger: {
+            trigger: imageContainerRef.current,
+            start: "top 80%",
+            end: "top 30%",
+            scrub: 1,
+          },
+        }
+      );
+
+      // Image parallax
+      gsap.to(imageRef.current, {
+        yPercent: -15,
+        scrollTrigger: {
+          trigger: imageContainerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.5,
+        },
+      });
+
+      // Info items stagger
+      gsap.fromTo(
+        ".about-info-item",
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: ".about-info-grid",
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="about" className="py-24 border-b-2 border-foreground" ref={ref}>
-      <div className="container mx-auto px-6">
-        <div className="grid lg:grid-cols-12 gap-12">
-          {/* Section Label */}
-          <div className="lg:col-span-3">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5 }}
-            >
-              <span className="text-accent font-mono text-sm">02</span>
-              <h2 className="text-headline mt-2">About</h2>
-            </motion.div>
+    <section
+      id="about"
+      ref={sectionRef}
+      className="relative py-32 md:py-48 bg-[#0a0a0a]"
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        {/* Section Header */}
+        <div className="mb-20 md:mb-32">
+          <div className="overflow-hidden">
+            <span className="about-title-line block text-white/30 text-xs tracking-[0.5em] uppercase mb-4">
+              About
+            </span>
+          </div>
+          <div className="overflow-hidden">
+            <h2 className="about-title-line font-display text-[clamp(2rem,5vw,4.5rem)] leading-[1.1] tracking-[-0.03em] text-white font-light max-w-4xl">
+              An informatics student with a deep passion for building
+              <span className="italic text-white/50"> meaningful </span>
+              digital experiences.
+            </h2>
+          </div>
+        </div>
+
+        {/* Image + Content Grid */}
+        <div className="grid lg:grid-cols-2 gap-16 md:gap-24 items-start">
+          {/* Expanding Image */}
+          <div
+            ref={imageContainerRef}
+            className="relative aspect-[3/4] overflow-hidden"
+          >
+            <img
+              ref={imageRef}
+              src={profilePhoto}
+              alt="Jian Hazel Sitorus"
+              className="w-full h-[120%] object-cover object-[center_20%] grayscale hover:grayscale-0 transition-all duration-1000"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/40 to-transparent" />
           </div>
 
-          {/* Content */}
-          <div className="lg:col-span-9">
-            <div className="grid md:grid-cols-2 gap-12">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <div className="relative">
-                  <div className="aspect-[4/5] bg-muted overflow-hidden border-2 border-foreground">
-                    <img
-                      src={profilePhoto}
-                      alt="Jian Hazel Sitorus"
-                      className="w-full h-full object-cover object-[center_20%] grayscale hover:grayscale-0 transition-all duration-500"
-                    />
-                  </div>
-                  <div className="absolute -bottom-4 -right-4 w-full h-full border-2 border-accent -z-10" />
-                </div>
-              </motion.div>
+          {/* Text Content */}
+          <div className="about-text-container flex flex-col justify-center space-y-10 lg:pt-16">
+            <p className="about-text text-white/70 text-lg md:text-xl leading-relaxed font-light">
+              I'm an Informatics student with a strong passion for software
+              development and AI. Always enthusiastic about learning new things
+              and working on challenging projects.
+            </p>
+            <p className="about-text text-white/40 text-base md:text-lg leading-relaxed font-light">
+              In my free time, I enjoy exploring the latest technologies,
+              contributing to open source, and sharing knowledge with the
+              developer community.
+            </p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="space-y-8"
-              >
-                <p className="text-lg leading-relaxed">
-                  I'm an Informatics student with a strong passion for software development 
-                  and AI. Always enthusiastic about learning new things and working on
-                  challenging projects.
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  In my free time, I enjoy exploring the latest technologies,
-                  contributing to open source, and sharing knowledge with the
-                  developer community.
-                </p>
-
-                <div className="pt-8 border-t-2 border-foreground">
-                  <div className="grid grid-cols-2 gap-6">
-                    {info.map((item, index) => (
-                      <motion.div
-                        key={item.label}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={isInView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
-                      >
-                        <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                          {item.label}
-                        </span>
-                        <p className="font-medium mt-1">{item.value}</p>
-                      </motion.div>
-                    ))}
+            {/* Info Grid */}
+            <div className="about-info-grid pt-10 border-t border-white/10">
+              <div className="grid grid-cols-2 gap-8">
+                {info.map((item) => (
+                  <div key={item.label} className="about-info-item">
+                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-2">
+                      {item.label}
+                    </span>
+                    <p className="text-white/80 text-sm font-light">
+                      {item.value}
+                    </p>
                   </div>
-                </div>
-              </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

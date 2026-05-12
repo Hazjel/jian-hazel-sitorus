@@ -1,7 +1,12 @@
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Github, Linkedin, Instagram, ArrowUp } from "lucide-react";
 
+gsap.registerPlugin(ScrollTrigger);
+
 const Footer = () => {
+  const footerRef = useRef(null);
   const currentYear = new Date().getFullYear();
 
   const scrollToTop = () => {
@@ -14,68 +19,70 @@ const Footer = () => {
     { icon: Instagram, href: "https://instagram.com/jihazel_", label: "Instagram" },
   ];
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".footer-content",
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top 90%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    }, footerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <footer className="py-12 relative">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-3 gap-8 items-center">
+    <footer ref={footerRef} className="relative py-16 bg-[#050505]">
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+      <div className="footer-content max-w-7xl mx-auto px-6 md:px-12">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <span className="text-2xl font-bold">
-              JHS<span className="text-accent">.</span>
-            </span>
-          </motion.div>
+          <span className="text-white/60 text-lg font-light tracking-[-0.02em]">
+            JHS<span className="text-white/20">.</span>
+          </span>
 
           {/* Copyright */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-center"
-          >
-            <span className="text-sm text-muted-foreground font-mono">
-              © {currentYear} Jian Hazel Sitorus
-            </span>
-          </motion.div>
+          <span className="text-white/20 text-xs tracking-[0.3em] uppercase">
+            &copy; {currentYear} Jian Hazel Sitorus
+          </span>
 
           {/* Social Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="flex justify-end gap-4"
-          >
+          <div className="flex items-center gap-4">
             {socialLinks.map((social) => (
-              <motion.a
+              <a
                 key={social.label}
                 href={social.href}
-                className="p-2 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 border border-white/10 text-white/30 hover:text-white/70 hover:border-white/30 transition-all duration-500"
                 aria-label={social.label}
               >
-                <social.icon size={18} />
-              </motion.a>
+                <social.icon size={16} />
+              </a>
             ))}
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Scroll to top */}
-      <motion.button
+      <button
         onClick={scrollToTop}
-        className="absolute right-6 top-1/2 -translate-y-1/2 p-3 border-2 border-foreground hover:bg-accent hover:border-accent hover:text-accent-foreground transition-colors"
-        whileHover={{ y: -2 }}
-        whileTap={{ scale: 0.95 }}
+        className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 p-3 border border-white/10 text-white/30 hover:text-white/70 hover:border-white/30 transition-all duration-500"
         aria-label="Scroll to top"
       >
-        <ArrowUp size={18} />
-      </motion.button>
+        <ArrowUp size={16} />
+      </button>
     </footer>
   );
 };

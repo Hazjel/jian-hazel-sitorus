@@ -1,13 +1,12 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
 import { z } from "zod";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const contactSchema = z.object({
   name: z
@@ -30,8 +29,7 @@ const contactSchema = z.object({
 });
 
 const ContactSection = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const sectionRef = useRef(null);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -40,6 +38,63 @@ const ContactSection = () => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".contact-title",
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      gsap.fromTo(
+        ".contact-form-field",
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: ".contact-form",
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      gsap.fromTo(
+        ".contact-info-item",
+        { x: -30, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.15,
+          scrollTrigger: {
+            trigger: ".contact-info",
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const validateField = (field, value) => {
     try {
@@ -83,15 +138,13 @@ const ContactSection = () => {
     setErrors({});
 
     try {
-      const { error } = await supabase
-        .from("messages")
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            message: formData.message,
-          },
-        ]);
+      const { error } = await supabase.from("messages").insert([
+        {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        },
+      ]);
 
       if (error) throw error;
 
@@ -118,120 +171,133 @@ const ContactSection = () => {
   ];
 
   return (
-    <section id="contact" className="py-24 bg-muted border-b-2 border-foreground" ref={ref}>
-      <div className="container mx-auto px-6">
-        <div className="grid lg:grid-cols-12 gap-12">
-          {/* Section Label */}
-          <div className="lg:col-span-3">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5 }}
-            >
-              <span className="text-accent font-mono text-sm">05</span>
-              <h2 className="text-headline mt-2">Contact</h2>
-              <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
-                Let's work together.
-              </p>
+    <section
+      id="contact"
+      ref={sectionRef}
+      className="relative py-32 md:py-48 bg-[#050505]"
+    >
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-              <div className="mt-8 space-y-4">
-                {contactInfo.map((item, index) => (
-                  <motion.div
-                    key={item.label}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                    className="flex items-center gap-3"
-                  >
-                    <item.icon className="w-4 h-4 text-accent" />
-                    <span className="text-sm">{item.value}</span>
-                  </motion.div>
-                ))}
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        {/* Section Header */}
+        <div className="mb-20 md:mb-28">
+          <span className="contact-title block text-white/30 text-xs tracking-[0.5em] uppercase mb-4">
+            Get in Touch
+          </span>
+          <h2 className="contact-title font-display text-[clamp(2rem,5vw,4.5rem)] leading-[1.1] tracking-[-0.03em] text-white font-light">
+            Let's create something
+            <span className="italic text-white/50"> extraordinary</span>
+          </h2>
+        </div>
+
+        <div className="grid lg:grid-cols-5 gap-16 md:gap-24">
+          {/* Contact Info */}
+          <div className="contact-info lg:col-span-2 space-y-8">
+            {contactInfo.map((item) => (
+              <div
+                key={item.label}
+                className="contact-info-item flex items-center gap-4"
+              >
+                <div className="p-3 border border-white/10">
+                  <item.icon className="w-4 h-4 text-white/40" />
+                </div>
+                <div>
+                  <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-1">
+                    {item.label}
+                  </span>
+                  <p className="text-white/70 text-sm font-light">
+                    {item.value}
+                  </p>
+                </div>
               </div>
-            </motion.div>
+            ))}
           </div>
 
           {/* Contact Form */}
-          <div className="lg:col-span-9">
-            <motion.form
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              onSubmit={handleSubmit}
-              className="space-y-6"
-              noValidate
-            >
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2 block">
-                    Name
-                  </label>
-                  <Input
-                    placeholder="Your name"
-                    value={formData.name}
-                    onChange={(e) => handleChange("name", e.target.value)}
-                    onBlur={() => handleBlur("name")}
-                    className={`bg-background border-2 focus:border-accent rounded-none h-12 ${errors.name ? "border-destructive" : "border-foreground"
-                      }`}
-                  />
-                  {errors.name && (
-                    <p className="text-destructive text-xs mt-1 font-mono">{errors.name}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2 block">
-                    Email
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={(e) => handleChange("email", e.target.value)}
-                    onBlur={() => handleBlur("email")}
-                    className={`bg-background border-2 focus:border-accent rounded-none h-12 ${errors.email ? "border-destructive" : "border-foreground"
-                      }`}
-                  />
-                  {errors.email && (
-                    <p className="text-destructive text-xs mt-1 font-mono">{errors.email}</p>
-                  )}
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2 block">
-                  Message
+          <form
+            onSubmit={handleSubmit}
+            className="contact-form lg:col-span-3 space-y-8"
+            noValidate
+          >
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="contact-form-field">
+                <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3">
+                  Name
                 </label>
-                <Textarea
-                  placeholder="Tell me about your project..."
-                  rows={6}
-                  value={formData.message}
-                  onChange={(e) => handleChange("message", e.target.value)}
-                  onBlur={() => handleBlur("message")}
-                  className={`bg-background border-2 focus:border-accent rounded-none resize-none ${errors.message ? "border-destructive" : "border-foreground"
-                    }`}
+                <input
+                  type="text"
+                  placeholder="Your name"
+                  value={formData.name}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                  onBlur={() => handleBlur("name")}
+                  className={`w-full bg-transparent border-b ${
+                    errors.name ? "border-red-400" : "border-white/15"
+                  } pb-3 text-white/80 text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-colors duration-500`}
                 />
-                {errors.message && (
-                  <p className="text-destructive text-xs mt-1 font-mono">{errors.message}</p>
+                {errors.name && (
+                  <p className="text-red-400/80 text-xs mt-2 font-light">
+                    {errors.name}
+                  </p>
                 )}
               </div>
-              <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.98 }}>
-                <Button
-                  type="submit"
-                  size="lg"
-                  disabled={isSubmitting}
-                  className="bg-foreground text-background hover:bg-accent font-medium uppercase tracking-wide btn-press group rounded-none"
-                >
-                  {isSubmitting ? (
-                    "Sending..."
-                  ) : (
-                    <>
-                      Send Message
-                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                    </>
-                  )}
-                </Button>
-              </motion.div>
-            </motion.form>
-          </div>
+              <div className="contact-form-field">
+                <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={formData.email}
+                  onChange={(e) => handleChange("email", e.target.value)}
+                  onBlur={() => handleBlur("email")}
+                  className={`w-full bg-transparent border-b ${
+                    errors.email ? "border-red-400" : "border-white/15"
+                  } pb-3 text-white/80 text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-colors duration-500`}
+                />
+                {errors.email && (
+                  <p className="text-red-400/80 text-xs mt-2 font-light">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="contact-form-field">
+              <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3">
+                Message
+              </label>
+              <textarea
+                placeholder="Tell me about your project..."
+                rows={5}
+                value={formData.message}
+                onChange={(e) => handleChange("message", e.target.value)}
+                onBlur={() => handleBlur("message")}
+                className={`w-full bg-transparent border-b ${
+                  errors.message ? "border-red-400" : "border-white/15"
+                } pb-3 text-white/80 text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-colors duration-500 resize-none`}
+              />
+              {errors.message && (
+                <p className="text-red-400/80 text-xs mt-2 font-light">
+                  {errors.message}
+                </p>
+              )}
+            </div>
+            <div className="contact-form-field">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="group flex items-center gap-3 text-white/70 text-sm tracking-[0.2em] uppercase hover:text-white transition-colors duration-500 disabled:opacity-40"
+              >
+                {isSubmitting ? (
+                  "Sending..."
+                ) : (
+                  <>
+                    Send Message
+                    <ArrowRight className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-2" />
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </section>
