@@ -42,6 +42,12 @@ const HeroSection = () => {
           "-=0.8"
         )
         .fromTo(
+          [".hero-top-marker", ".hero-side-label"],
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 1.2, stagger: 0.1 },
+          "-=0.8"
+        )
+        .fromTo(
           scrollIndicatorRef.current,
           { opacity: 0 },
           { opacity: 1, duration: 1 },
@@ -88,8 +94,9 @@ const HeroSection = () => {
           src={profilePhoto}
           alt="Jian Hazel Sitorus"
           className="w-full h-full object-cover object-[center_20%] opacity-0"
-          style={{ filter: "brightness(0.35) contrast(1.1)" }}
+          style={{ filter: "brightness(0.3) contrast(1.1)" }}
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/60 via-transparent to-[#0a0a0a]" />
       </div>
 
       {/* Reveal Overlay */}
@@ -100,24 +107,53 @@ const HeroSection = () => {
       />
 
       {/* Grain Texture Overlay */}
-      <div className="absolute inset-0 z-20 opacity-[0.03] pointer-events-none grain-texture" />
+      <div className="absolute inset-0 z-20 opacity-[0.04] pointer-events-none grain-texture" />
+
+      {/* Side Labels */}
+      <div className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 z-30 hidden md:flex flex-col items-center gap-6 opacity-0 hero-side-label">
+        <span className="text-white/30 text-[10px] tracking-[0.5em] uppercase writing-mode-vertical">
+          Portfolio &mdash; 2026
+        </span>
+      </div>
+
+      <div className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 z-30 hidden md:flex flex-col items-center gap-6 opacity-0 hero-side-label">
+        <span className="text-white/30 text-[10px] tracking-[0.5em] uppercase writing-mode-vertical">
+          Bandung &mdash; Indonesia
+        </span>
+      </div>
+
+      {/* Top Marker */}
+      <div className="absolute top-28 md:top-32 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4 opacity-0 hero-top-marker">
+        <span className="w-8 h-px bg-white/30" />
+        <span className="text-white/40 text-[10px] tracking-[0.5em] uppercase">
+          Est. 2023
+        </span>
+        <span className="w-8 h-px bg-white/30" />
+      </div>
 
       {/* Content */}
-      <div ref={headingRef} className="relative z-30 text-center px-6">
-        <div className="overflow-hidden mb-2">
-          <h1 className="hero-line font-display text-[clamp(3rem,12vw,10rem)] leading-[0.85] tracking-[-0.04em] text-white font-light">
+      <div ref={headingRef} className="relative z-30 text-center px-6 max-w-[90rem]">
+        <div className="overflow-hidden mb-1 md:mb-2">
+          <h1 className="hero-line font-display text-[clamp(3.5rem,13vw,11rem)] leading-[0.9] tracking-[-0.04em] text-white font-light">
             Jian Hazel
           </h1>
         </div>
         <div className="overflow-hidden">
-          <h1 className="hero-line font-display text-[clamp(3rem,12vw,10rem)] leading-[0.85] tracking-[-0.04em] text-white/60 font-light italic">
+          <h1 className="hero-line font-display text-[clamp(3.5rem,13vw,11rem)] leading-[0.9] tracking-[-0.04em] text-white/50 font-light italic">
             Sitorus
           </h1>
         </div>
 
-        <div ref={subRef} className="mt-8 md:mt-12">
-          <p className="text-white/50 text-sm md:text-base tracking-[0.3em] uppercase font-light">
-            Software Developer &mdash; Informatics
+        <div ref={subRef} className="mt-10 md:mt-14 flex flex-col items-center gap-3">
+          <div className="flex items-center gap-4">
+            <span className="w-10 h-px bg-white/30" />
+            <p className="text-white/60 text-[11px] md:text-xs tracking-[0.4em] uppercase font-light">
+              Software Developer
+            </p>
+            <span className="w-10 h-px bg-white/30" />
+          </div>
+          <p className="text-white/30 text-[10px] md:text-[11px] tracking-[0.3em] uppercase font-light">
+            Informatics &mdash; Telkom University
           </p>
         </div>
       </div>
@@ -125,7 +161,7 @@ const HeroSection = () => {
       {/* Scroll Indicator */}
       <div
         ref={scrollIndicatorRef}
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3"
+        className="absolute bottom-10 md:bottom-14 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3"
       >
         <span className="text-white/40 text-[10px] tracking-[0.4em] uppercase">
           Scroll

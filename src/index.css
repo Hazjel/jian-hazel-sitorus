@@ -202,6 +202,21 @@
   }
 }
 
+/* ─── Vertical writing mode for side labels ─── */
+.writing-mode-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+/* ─── Line clamp helper ─── */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* ─── Lenis Smooth Scroll ─── */
 html.lenis,
 html.lenis body {

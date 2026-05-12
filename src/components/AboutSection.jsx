@@ -40,13 +40,13 @@ const AboutSection = () => {
       // Text paragraphs fade in
       gsap.fromTo(
         ".about-text",
-        { y: 50, opacity: 0 },
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
           duration: 1,
           ease: "power3.out",
-          stagger: 0.2,
+          stagger: 0.15,
           scrollTrigger: {
             trigger: ".about-text-container",
             start: "top 80%",
@@ -58,13 +58,13 @@ const AboutSection = () => {
       // Image expansion on scroll
       gsap.fromTo(
         imageContainerRef.current,
-        { clipPath: "inset(20% 20% 20% 20%)" },
+        { clipPath: "inset(15% 15% 15% 15%)" },
         {
           clipPath: "inset(0% 0% 0% 0%)",
           ease: "none",
           scrollTrigger: {
             trigger: imageContainerRef.current,
-            start: "top 80%",
+            start: "top 85%",
             end: "top 30%",
             scrub: 1,
           },
@@ -73,7 +73,7 @@ const AboutSection = () => {
 
       // Image parallax
       gsap.to(imageRef.current, {
-        yPercent: -15,
+        yPercent: -12,
         scrollTrigger: {
           trigger: imageContainerRef.current,
           start: "top bottom",
@@ -85,13 +85,13 @@ const AboutSection = () => {
       // Info items stagger
       gsap.fromTo(
         ".about-info-item",
-        { y: 30, opacity: 0 },
+        { y: 20, opacity: 0 },
         {
           y: 0,
           opacity: 1,
           duration: 0.8,
           ease: "power3.out",
-          stagger: 0.1,
+          stagger: 0.08,
           scrollTrigger: {
             trigger: ".about-info-grid",
             start: "top 85%",
@@ -108,18 +108,22 @@ const AboutSection = () => {
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-32 md:py-48 bg-[#0a0a0a]"
+      className="relative py-32 md:py-40 lg:py-48 bg-[#0a0a0a]"
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
         {/* Section Header */}
-        <div className="mb-20 md:mb-32">
-          <div className="overflow-hidden">
-            <span className="about-title-line block text-white/30 text-xs tracking-[0.5em] uppercase mb-4">
+        <div className="mb-20 md:mb-28 lg:mb-32">
+          <div className="flex items-center gap-4 mb-6 overflow-hidden">
+            <span className="about-title-line text-white/20 text-xs tracking-[0.4em] font-mono">
+              01
+            </span>
+            <span className="about-title-line w-12 h-px bg-white/20" />
+            <span className="about-title-line text-white/40 text-[11px] tracking-[0.4em] uppercase">
               About
             </span>
           </div>
           <div className="overflow-hidden">
-            <h2 className="about-title-line font-display text-[clamp(2rem,5vw,4.5rem)] leading-[1.1] tracking-[-0.03em] text-white font-light max-w-4xl">
+            <h2 className="about-title-line font-display text-[clamp(2rem,5.5vw,5rem)] leading-[1.05] tracking-[-0.03em] text-white font-light max-w-5xl">
               An informatics student with a deep passion for building
               <span className="italic text-white/50"> meaningful </span>
               digital experiences.
@@ -128,43 +132,50 @@ const AboutSection = () => {
         </div>
 
         {/* Image + Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-16 md:gap-24 items-start">
+        <div className="grid lg:grid-cols-12 gap-10 md:gap-16 lg:gap-20 items-start">
           {/* Expanding Image */}
-          <div
-            ref={imageContainerRef}
-            className="relative aspect-[3/4] overflow-hidden"
-          >
-            <img
-              ref={imageRef}
-              src={profilePhoto}
-              alt="Jian Hazel Sitorus"
-              className="w-full h-[120%] object-cover object-[center_20%] grayscale hover:grayscale-0 transition-all duration-1000"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/40 to-transparent" />
+          <div className="lg:col-span-5">
+            <div
+              ref={imageContainerRef}
+              className="relative aspect-[4/5] overflow-hidden"
+            >
+              <img
+                ref={imageRef}
+                src={profilePhoto}
+                alt="Jian Hazel Sitorus"
+                className="absolute inset-0 w-full h-[120%] object-cover object-[center_20%] grayscale hover:grayscale-0 transition-all duration-[1500ms]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/50 via-transparent to-transparent" />
+            </div>
+            {/* Image caption */}
+            <div className="mt-4 flex items-center justify-between text-[10px] tracking-[0.3em] uppercase text-white/30">
+              <span>Portrait</span>
+              <span>— 2026</span>
+            </div>
           </div>
 
           {/* Text Content */}
-          <div className="about-text-container flex flex-col justify-center space-y-10 lg:pt-16">
-            <p className="about-text text-white/70 text-lg md:text-xl leading-relaxed font-light">
-              I'm an Informatics student with a strong passion for software
-              development and AI. Always enthusiastic about learning new things
-              and working on challenging projects.
+          <div className="about-text-container lg:col-span-7 flex flex-col justify-start space-y-10 lg:pt-6">
+            <p className="about-text text-white/80 text-xl md:text-2xl leading-[1.5] font-light tracking-[-0.01em]">
+              I&apos;m an Informatics student with a strong passion for
+              software development and AI. Always enthusiastic about learning
+              new things and working on challenging projects.
             </p>
-            <p className="about-text text-white/40 text-base md:text-lg leading-relaxed font-light">
+            <p className="about-text text-white/40 text-base md:text-lg leading-[1.7] font-light max-w-2xl">
               In my free time, I enjoy exploring the latest technologies,
               contributing to open source, and sharing knowledge with the
               developer community.
             </p>
 
             {/* Info Grid */}
-            <div className="about-info-grid pt-10 border-t border-white/10">
-              <div className="grid grid-cols-2 gap-8">
+            <div className="about-info-grid pt-12 mt-4 border-t border-white/10">
+              <div className="grid grid-cols-2 gap-x-8 gap-y-10">
                 {info.map((item) => (
                   <div key={item.label} className="about-info-item">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-2">
+                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3">
                       {item.label}
                     </span>
-                    <p className="text-white/80 text-sm font-light">
+                    <p className="text-white/85 text-sm md:text-base font-light tracking-[-0.01em]">
                       {item.value}
                     </p>
                   </div>

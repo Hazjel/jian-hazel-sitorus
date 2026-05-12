@@ -60,16 +60,16 @@ const ContactSection = () => {
 
       gsap.fromTo(
         ".contact-form-field",
-        { y: 40, opacity: 0 },
+        { y: 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: 0.9,
           ease: "power3.out",
           stagger: 0.1,
           scrollTrigger: {
             trigger: ".contact-form",
-            start: "top 80%",
+            start: "top 85%",
             toggleActions: "play none none none",
           },
         }
@@ -77,13 +77,13 @@ const ContactSection = () => {
 
       gsap.fromTo(
         ".contact-info-item",
-        { x: -30, opacity: 0 },
+        { x: -20, opacity: 0 },
         {
           x: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: 0.9,
           ease: "power3.out",
-          stagger: 0.15,
+          stagger: 0.12,
           scrollTrigger: {
             trigger: ".contact-info",
             start: "top 85%",
@@ -174,54 +174,67 @@ const ContactSection = () => {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative py-32 md:py-48 bg-[#050505]"
+      className="relative py-32 md:py-40 lg:py-48 bg-[#050505]"
     >
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
         {/* Section Header */}
-        <div className="mb-20 md:mb-28">
-          <span className="contact-title block text-white/30 text-xs tracking-[0.5em] uppercase mb-4">
-            Get in Touch
-          </span>
-          <h2 className="contact-title font-display text-[clamp(2rem,5vw,4.5rem)] leading-[1.1] tracking-[-0.03em] text-white font-light">
-            Let's create something
+        <div className="mb-20 md:mb-28 lg:mb-32">
+          <div className="flex items-center gap-4 mb-6">
+            <span className="contact-title text-white/20 text-xs tracking-[0.4em] font-mono">
+              04
+            </span>
+            <span className="contact-title w-12 h-px bg-white/20" />
+            <span className="contact-title text-white/40 text-[11px] tracking-[0.4em] uppercase">
+              Get in Touch
+            </span>
+          </div>
+          <h2 className="contact-title font-display text-[clamp(2rem,5.5vw,5rem)] leading-[1.05] tracking-[-0.03em] text-white font-light max-w-4xl">
+            Let&apos;s create something
             <span className="italic text-white/50"> extraordinary</span>
           </h2>
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-16 md:gap-24">
+        <div className="grid lg:grid-cols-12 gap-12 md:gap-16 lg:gap-20">
           {/* Contact Info */}
-          <div className="contact-info lg:col-span-2 space-y-8">
-            {contactInfo.map((item) => (
-              <div
-                key={item.label}
-                className="contact-info-item flex items-center gap-4"
-              >
-                <div className="p-3 border border-white/10">
-                  <item.icon className="w-4 h-4 text-white/40" />
+          <div className="contact-info lg:col-span-4 space-y-10 lg:pt-4">
+            <p className="text-white/60 text-base md:text-lg leading-[1.7] font-light">
+              I&apos;m open to collaborations, freelance opportunities, and
+              interesting conversations. Feel free to reach out.
+            </p>
+
+            <div className="space-y-8 pt-4">
+              {contactInfo.map((item) => (
+                <div
+                  key={item.label}
+                  className="contact-info-item flex items-start gap-5"
+                >
+                  <div className="p-3 border border-white/10 shrink-0">
+                    <item.icon className="w-4 h-4 text-white/50" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-1.5">
+                      {item.label}
+                    </span>
+                    <p className="text-white/80 text-sm md:text-base font-light break-all">
+                      {item.value}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-1">
-                    {item.label}
-                  </span>
-                  <p className="text-white/70 text-sm font-light">
-                    {item.value}
-                  </p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Contact Form */}
           <form
             onSubmit={handleSubmit}
-            className="contact-form lg:col-span-3 space-y-8"
+            className="contact-form lg:col-span-8 space-y-10"
             noValidate
           >
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-10">
               <div className="contact-form-field">
-                <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3">
+                <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
                   Name
                 </label>
                 <input
@@ -231,17 +244,17 @@ const ContactSection = () => {
                   onChange={(e) => handleChange("name", e.target.value)}
                   onBlur={() => handleBlur("name")}
                   className={`w-full bg-transparent border-b ${
-                    errors.name ? "border-red-400" : "border-white/15"
-                  } pb-3 text-white/80 text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-colors duration-500`}
+                    errors.name ? "border-red-400/60" : "border-white/15"
+                  } pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none focus:border-white/60 transition-colors duration-500`}
                 />
                 {errors.name && (
-                  <p className="text-red-400/80 text-xs mt-2 font-light">
+                  <p className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
                     {errors.name}
                   </p>
                 )}
               </div>
               <div className="contact-form-field">
-                <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3">
+                <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
                   Email
                 </label>
                 <input
@@ -251,18 +264,18 @@ const ContactSection = () => {
                   onChange={(e) => handleChange("email", e.target.value)}
                   onBlur={() => handleBlur("email")}
                   className={`w-full bg-transparent border-b ${
-                    errors.email ? "border-red-400" : "border-white/15"
-                  } pb-3 text-white/80 text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-colors duration-500`}
+                    errors.email ? "border-red-400/60" : "border-white/15"
+                  } pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none focus:border-white/60 transition-colors duration-500`}
                 />
                 {errors.email && (
-                  <p className="text-red-400/80 text-xs mt-2 font-light">
+                  <p className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
                     {errors.email}
                   </p>
                 )}
               </div>
             </div>
             <div className="contact-form-field">
-              <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3">
+              <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
                 Message
               </label>
               <textarea
@@ -272,20 +285,20 @@ const ContactSection = () => {
                 onChange={(e) => handleChange("message", e.target.value)}
                 onBlur={() => handleBlur("message")}
                 className={`w-full bg-transparent border-b ${
-                  errors.message ? "border-red-400" : "border-white/15"
-                } pb-3 text-white/80 text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-colors duration-500 resize-none`}
+                  errors.message ? "border-red-400/60" : "border-white/15"
+                } pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none focus:border-white/60 transition-colors duration-500 resize-none`}
               />
               {errors.message && (
-                <p className="text-red-400/80 text-xs mt-2 font-light">
+                <p className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
                   {errors.message}
                 </p>
               )}
             </div>
-            <div className="contact-form-field">
+            <div className="contact-form-field pt-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="group flex items-center gap-3 text-white/70 text-sm tracking-[0.2em] uppercase hover:text-white transition-colors duration-500 disabled:opacity-40"
+                className="group inline-flex items-center gap-4 text-white/80 text-xs tracking-[0.3em] uppercase hover:text-white transition-colors duration-500 disabled:opacity-40 py-4 pr-2 border-b border-white/20 hover:border-white/60"
               >
                 {isSubmitting ? (
                   "Sending..."
