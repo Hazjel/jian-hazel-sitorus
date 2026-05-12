@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, ArrowUpRight, Github, Calendar } from "lucide-react";
+import CustomCursor from "@/components/CustomCursor";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -146,6 +147,7 @@ const ProjectDetail = () => {
       ref={containerRef}
       className="min-h-screen bg-[#0a0a0a] text-white cinematic-portfolio cursor-none md:cursor-none"
     >
+      <CustomCursor />
       {/* Grain overlay */}
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none grain-texture z-[1]" />
 
