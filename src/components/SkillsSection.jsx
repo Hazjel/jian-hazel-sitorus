@@ -5,6 +5,98 @@ import { supabase } from "@/integrations/supabase/client";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Map skill names to Devicon slugs
+const getIconUrl = (skillName) => {
+  const nameMap = {
+    "html & css": "html5",
+    "html": "html5",
+    "css": "css3",
+    "javascript": "javascript",
+    "js": "javascript",
+    "typescript": "typescript",
+    "react": "react",
+    "react.js": "react",
+    "next.js": "nextjs",
+    "nextjs": "nextjs",
+    "vue": "vuejs",
+    "vue.js": "vuejs",
+    "angular": "angularjs",
+    "svelte": "svelte",
+    "tailwind css": "tailwindcss",
+    "tailwind": "tailwindcss",
+    "bootstrap": "bootstrap",
+    "sass": "sass",
+    "node.js": "nodejs",
+    "nodejs": "nodejs",
+    "express": "express",
+    "express.js": "express",
+    "nestjs": "nestjs",
+    "laravel": "laravel",
+    "php": "php",
+    "python": "python",
+    "django": "django",
+    "flask": "flask",
+    "fastapi": "fastapi",
+    "java": "java",
+    "spring": "spring",
+    "spring boot": "spring",
+    "kotlin": "kotlin",
+    "go": "go",
+    "golang": "go",
+    "rust": "rust",
+    "ruby": "ruby",
+    "rails": "rails",
+    "mysql": "mysql",
+    "postgresql": "postgresql",
+    "postgres": "postgresql",
+    "mongodb": "mongodb",
+    "redis": "redis",
+    "sqlite": "sqlite",
+    "firebase": "firebase",
+    "supabase": "supabase",
+    "git": "git",
+    "git & github": "github",
+    "github": "github",
+    "gitlab": "gitlab",
+    "docker": "docker",
+    "kubernetes": "kubernetes",
+    "figma": "figma",
+    "adobe xd": "xd",
+    "photoshop": "photoshop",
+    "illustrator": "illustrator",
+    "c++": "cplusplus",
+    "c#": "csharp",
+    "c": "c",
+    "aws": "amazonwebservices",
+    "azure": "azure",
+    "gcp": "googlecloud",
+    "google cloud": "googlecloud",
+    "vercel": "vercel",
+    "netlify": "netlify",
+    "linux": "linux",
+    "ubuntu": "ubuntu",
+    "bash": "bash",
+    "vscode": "vscode",
+    "vs code": "vscode",
+    "intellij": "intellij",
+    "postman": "postman",
+    "graphql": "graphql",
+    "redux": "redux",
+    "jest": "jest",
+    "webpack": "webpack",
+    "vite": "vitejs",
+    "tensorflow": "tensorflow",
+    "pytorch": "pytorch",
+    "numpy": "numpy",
+    "pandas": "pandas",
+  };
+
+  const normalized = skillName.toLowerCase().trim();
+  const slug = nameMap[normalized] || normalized.replace(/[^a-z0-9]/g, "");
+
+  return `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${slug}/${slug}-original.svg`;
+};
+
 const SkillsSection = () => {
   const sectionRef = useRef(null);
   const [groupedSkills, setGroupedSkills] = useState({});
@@ -154,8 +246,18 @@ const SkillsSection = () => {
                   {groupedSkills[category].map((skill) => (
                     <span
                       key={skill.id}
-                      className="skill-item inline-block px-3.5 py-1.5 text-xs tracking-[0.05em] text-white/60 border border-white/10 hover:border-white/40 hover:text-white/90 hover:bg-white/[0.02] transition-all duration-500 cursor-default"
+                      className="skill-item group/skill inline-flex items-center gap-2 px-3.5 py-1.5 text-xs tracking-[0.05em] text-white/60 border border-white/10 hover:border-white/40 hover:text-white/90 hover:bg-white/[0.02] transition-all duration-500 cursor-default"
                     >
+                      <img
+                        src={getIconUrl(skill.name)}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        className="w-3.5 h-3.5 object-contain opacity-70 grayscale group-hover/skill:opacity-100 group-hover/skill:grayscale-0 transition-all duration-500"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
                       {skill.name}
                     </span>
                   ))}
