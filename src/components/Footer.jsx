@@ -22,16 +22,33 @@ const Footer = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        ".footer-content",
-        { y: 30, opacity: 0 },
+        ".footer-brand",
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 1,
+          duration: 1.4,
           ease: "power3.out",
           scrollTrigger: {
             trigger: footerRef.current,
             start: "top 90%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      gsap.fromTo(
+        ".footer-item",
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top 85%",
             toggleActions: "play none none none",
           },
         }
@@ -42,47 +59,90 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer ref={footerRef} className="relative py-16 bg-[#050505]">
+    <footer ref={footerRef} className="relative bg-[#050505] overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      <div className="footer-content max-w-7xl mx-auto px-6 md:px-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          {/* Logo */}
-          <span className="text-white/60 text-lg font-light tracking-[-0.02em]">
-            JHS<span className="text-white/20">.</span>
-          </span>
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 py-24 md:py-32">
+        {/* Large Brand Statement */}
+        <div className="footer-brand mb-20 md:mb-24">
+          <p className="text-white/30 text-[11px] tracking-[0.4em] uppercase mb-6">
+            Let&apos;s Connect
+          </p>
+          <a
+            href="mailto:duojhs222@gmail.com"
+            className="group inline-block"
+          >
+            <span className="font-display text-[clamp(2rem,7vw,6rem)] leading-[1] tracking-[-0.03em] text-white/90 font-light hover:text-white transition-colors duration-700 italic">
+              duojhs222@gmail.com
+            </span>
+            <span className="block h-px w-0 bg-white/40 group-hover:w-full transition-all duration-700 mt-2" />
+          </a>
+        </div>
 
-          {/* Copyright */}
-          <span className="text-white/20 text-xs tracking-[0.3em] uppercase">
-            &copy; {currentYear} Jian Hazel Sitorus
-          </span>
+        {/* Divider */}
+        <div className="h-px bg-white/5 mb-12" />
+
+        {/* Bottom Bar */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+          {/* Logo & Copyright */}
+          <div className="footer-item flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+            <div className="flex items-center gap-2">
+              <span className="font-display text-xl text-white/80 tracking-[-0.02em]">
+                JHS
+              </span>
+              <span className="w-1 h-1 bg-white/30 rounded-full" />
+            </div>
+            <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase">
+              &copy; {currentYear} Jian Hazel Sitorus
+            </span>
+          </div>
+
+          {/* Nav Links */}
+          <div className="footer-item flex items-center gap-6 md:gap-8 text-[10px] tracking-[0.3em] uppercase">
+            <a
+              href="#about"
+              className="text-white/40 hover:text-white/80 transition-colors duration-500"
+            >
+              About
+            </a>
+            <a
+              href="#projects"
+              className="text-white/40 hover:text-white/80 transition-colors duration-500"
+            >
+              Work
+            </a>
+            <a
+              href="#contact"
+              className="text-white/40 hover:text-white/80 transition-colors duration-500"
+            >
+              Contact
+            </a>
+          </div>
 
           {/* Social Links */}
-          <div className="flex items-center gap-4">
+          <div className="footer-item flex items-center gap-3">
             {socialLinks.map((social) => (
               <a
                 key={social.label}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 border border-white/10 text-white/30 hover:text-white/70 hover:border-white/30 transition-all duration-500"
+                className="p-2.5 border border-white/10 text-white/40 hover:text-white hover:border-white/40 transition-all duration-500"
                 aria-label={social.label}
               >
-                <social.icon size={16} />
+                <social.icon size={14} />
               </a>
             ))}
+            <button
+              onClick={scrollToTop}
+              className="ml-2 p-2.5 border border-white/10 text-white/40 hover:text-white hover:border-white/40 transition-all duration-500"
+              aria-label="Scroll to top"
+            >
+              <ArrowUp size={14} />
+            </button>
           </div>
         </div>
       </div>
-
-      {/* Scroll to top */}
-      <button
-        onClick={scrollToTop}
-        className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 p-3 border border-white/10 text-white/30 hover:text-white/70 hover:border-white/30 transition-all duration-500"
-        aria-label="Scroll to top"
-      >
-        <ArrowUp size={16} />
-      </button>
     </footer>
   );
 };
