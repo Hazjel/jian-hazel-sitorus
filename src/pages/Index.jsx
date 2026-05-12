@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
-import CustomCursor from "@/components/CustomCursor";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -19,7 +18,6 @@ const Index = () => {
 
   return (
     <div className="cinematic-portfolio bg-[#0a0a0a] min-h-screen cursor-none md:cursor-none">
-      <CustomCursor />
       <Navbar />
       <main>
         <HeroSection />

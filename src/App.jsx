@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/use-theme";
 import PageTransition from "./components/PageTransition";
+import CustomCursor from "./components/CustomCursor";
 import Index from "./pages/Index";
 import Work from "./pages/Work";
 import ProjectDetail from "./pages/ProjectDetail";
@@ -66,34 +67,49 @@ const SmoothScroll = ({ children }) => {
   return children;
 };
 
+// Cursor only on portfolio pages
+const CursorWrapper = () => {
+  const location = useLocation();
+  const isPortfolioPage =
+    location.pathname === "/" ||
+    location.pathname === "/work" ||
+    location.pathname.startsWith("/project/");
+
+  if (!isPortfolioPage) return null;
+  return <CustomCursor />;
+};
+
 // Animated routes wrapper
 const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
-    <PageTransition key={location.pathname}>
-      <Routes location={location}>
-        <Route path="/" element={<Index />} />
-        <Route path="/work" element={<Work />} />
-        <Route path="/project/:slug" element={<ProjectDetail />} />
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="projects" element={<Projects />} />
-          <Route path="messages" element={<Messages />} />
-          <Route path="skills" element={<Skills />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </PageTransition>
+    <>
+      <CursorWrapper />
+      <PageTransition key={location.pathname}>
+        <Routes location={location}>
+          <Route path="/" element={<Index />} />
+          <Route path="/work" element={<Work />} />
+          <Route path="/project/:slug" element={<ProjectDetail />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="projects" element={<Projects />} />
+            <Route path="messages" element={<Messages />} />
+            <Route path="skills" element={<Skills />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </PageTransition>
+    </>
   );
 };
 
