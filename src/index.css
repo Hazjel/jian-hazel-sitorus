@@ -7,6 +7,7 @@
 
 /* ═══════════════════════════════════════════
    CINEMATIC LUXURY PORTFOLIO — Global Styles
+   Ultra-Premium Edition
    ═══════════════════════════════════════════ */
 
 @layer base {
@@ -49,6 +50,11 @@
     --sidebar-accent-foreground: 0 0% 95%;
     --sidebar-border: 0 0% 15%;
     --sidebar-ring: 0 0% 40%;
+
+    /* Premium accent palette */
+    --accent-violet: 270 70% 55%;
+    --accent-cyan: 190 90% 50%;
+    --accent-rose: 340 80% 55%;
   }
 
   .dark {
@@ -164,6 +170,185 @@
     .cinematic-portfolio * {
       cursor: auto !important;
     }
+  }
+
+  /* ─── Glassmorphism Card ─── */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  /* ─── Shimmer Effect ─── */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.04),
+      transparent
+    );
+    animation: shimmerMove 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmerMove {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  /* ─── Aurora Background Effect ─── */
+  .aurora-bg {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .aurora-bg::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      transparent 0deg,
+      rgba(255, 255, 255, 0.015) 60deg,
+      transparent 120deg,
+      rgba(255, 255, 255, 0.01) 180deg,
+      transparent 240deg,
+      rgba(255, 255, 255, 0.008) 300deg,
+      transparent 360deg
+    );
+    animation: auroraRotate 30s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes auroraRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* ─── Magnetic Hover Effect ─── */
+  .magnetic-hover {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ─── Glow Line ─── */
+  .glow-line {
+    position: relative;
+  }
+
+  .glow-line::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 0.7s ease;
+  }
+
+  .glow-line:hover::after {
+    opacity: 1;
+  }
+
+  /* ─── Text Gradient Accent ─── */
+  .text-gradient-accent {
+    background: linear-gradient(135deg, #a78bfa, #60a5fa, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ─── Pulse Glow ─── */
+  .pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 4px rgba(255, 255, 255, 0.1),
+                  0 0 8px rgba(255, 255, 255, 0.05);
+    }
+    50% {
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.15),
+                  0 0 20px rgba(255, 255, 255, 0.08),
+                  0 0 40px rgba(255, 255, 255, 0.04);
+    }
+  }
+
+  /* ─── Skill Chip Enhanced ─── */
+  .skill-chip {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .skill-chip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .skill-chip:hover::before {
+    opacity: 1;
+  }
+
+  .skill-chip:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.04),
+                inset 0 0 15px rgba(255, 255, 255, 0.02);
+    transform: translateY(-2px);
+  }
+
+  /* ─── Project Card 3D Tilt ─── */
+  .project-card-premium {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  .project-card-premium .card-inner {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ─── Staggered Section Divider ─── */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.06) 15%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.06) 85%,
+      transparent 100%
+    );
   }
 }
 
@@ -302,6 +487,154 @@
     transform: translateY(-25px) translateX(8px);
     opacity: 0.25;
   }
+}
+
+/* ─── Aurora Orbs ─── */
+.animate-aurora-orb {
+  animation: auroraOrb 15s ease-in-out infinite;
+}
+
+.animate-aurora-orb-reverse {
+  animation: auroraOrbReverse 20s ease-in-out infinite;
+}
+
+@keyframes auroraOrb {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate(5%, -8%) scale(1.1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-3%, 5%) scale(0.9);
+    opacity: 0.2;
+  }
+  75% {
+    transform: translate(4%, -3%) scale(1.05);
+    opacity: 0.4;
+  }
+}
+
+@keyframes auroraOrbReverse {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.25;
+  }
+  33% {
+    transform: translate(-6%, 4%) scale(0.95);
+    opacity: 0.4;
+  }
+  66% {
+    transform: translate(3%, -6%) scale(1.08);
+    opacity: 0.15;
+  }
+}
+
+/* ─── Glitch Text Effect ─── */
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text::before {
+  animation: glitch1 3s ease-in-out infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.glitch-text::after {
+  animation: glitch2 3s ease-in-out infinite;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  color: rgba(200, 200, 200, 0.3);
+}
+
+@keyframes glitch1 {
+  0%, 90%, 100% { transform: translate(0); }
+  92% { transform: translate(-3px, 1px); }
+  94% { transform: translate(3px, -1px); }
+  96% { transform: translate(-2px, 2px); }
+  98% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch2 {
+  0%, 90%, 100% { transform: translate(0); }
+  91% { transform: translate(3px, 1px); }
+  93% { transform: translate(-3px, -1px); }
+  95% { transform: translate(2px, 2px); }
+  97% { transform: translate(-2px, -2px); }
+}
+
+/* ─── Marquee / Infinite Scroll ─── */
+.marquee-track {
+  display: flex;
+  animation: marqueeScroll 40s linear infinite;
+  width: max-content;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ─── Spotlight Hover Effect ─── */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  top: var(--mouse-y, 50%);
+  left: var(--mouse-x, 50%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.03) 0%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+/* ─── Loading Skeleton Pulse ─── */
+.skeleton-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* ─── Lenis Smooth Scroll ─── */

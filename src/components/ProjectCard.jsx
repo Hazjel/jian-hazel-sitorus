@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,6 +9,21 @@ gsap.registerPlugin(ScrollTrigger);
 const ProjectCard = ({ project, index }) => {
   const cardRef = useRef(null);
   const imageRef = useRef(null);
+  const imageContainerRef = useRef(null);
+
+  // Spotlight hover tracking
+  const handleMouseMove = useCallback((e) => {
+    if (!imageContainerRef.current) return;
+    const rect = imageContainerRef.current.getBoundingClientRect();
+    imageContainerRef.current.style.setProperty(
+      "--mouse-x",
+      `${e.clientX - rect.left}px`
+    );
+    imageContainerRef.current.style.setProperty(
+      "--mouse-y",
+      `${e.clientY - rect.top}px`
+    );
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -55,7 +70,11 @@ const ProjectCard = ({ project, index }) => {
     <div ref={cardRef} className="project-card group relative">
       {/* Project Image */}
       <Link to={`/project/${project.slug}`} className="block">
-        <div className="relative aspect-video overflow-hidden bg-white/[0.02] border border-white/5 mb-7">
+        <div
+          ref={imageContainerRef}
+          className="spotlight-card relative aspect-video overflow-hidden bg-white/[0.02] border border-white/5 mb-7 transition-all duration-700 group-hover:border-white/15"
+          onMouseMove={handleMouseMove}
+        >
           {project.image_url ? (
             <img
               ref={imageRef}
@@ -66,11 +85,22 @@ const ProjectCard = ({ project, index }) => {
               style={{ filter: "brightness(0.9) contrast(1.05)" }}
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-white/20 text-[10px] tracking-[0.3em] uppercase">
-              No Image
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 border border-white/10 flex items-center justify-center">
+                  <span className="text-white/15 text-2xl font-display italic">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <span className="text-white/20 text-[10px] tracking-[0.3em] uppercase">
+                  No Image
+                </span>
+              </div>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/10 to-transparent opacity-40 group-hover:opacity-60 transition-opacity duration-700" />
+          {/* Gradient overlay with violet tint on hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/10 to-transparent opacity-40 group-hover:opacity-30 transition-opacity duration-700" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f15]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
           {/* Project number */}
           <div className="absolute top-5 left-5 flex items-center gap-2.5">
@@ -81,9 +111,12 @@ const ProjectCard = ({ project, index }) => {
           </div>
 
           {/* View link indicator */}
-          <div className="absolute bottom-5 right-5 p-3 border border-white/20 bg-black/20 backdrop-blur-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+          <div className="absolute bottom-5 right-5 p-3 border border-white/20 bg-black/30 backdrop-blur-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
             <ArrowUpRight size={14} className="text-white" />
           </div>
+
+          {/* Hover accent line */}
+          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-white/0 via-white/30 to-white/0 scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-center" />
         </div>
       </Link>
 
@@ -132,17 +165,22 @@ const ProjectCard = ({ project, index }) => {
           {project.description}
         </p>
 
-        {/* Tags */}
+        {/* Tags with enhanced styling */}
         {project.tags && project.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 pt-3">
             {project.tags.slice(0, 4).map((tag) => (
               <span
                 key={tag}
-                className="text-[10px] tracking-[0.2em] uppercase text-white/35 px-2.5 py-1 border border-white/10"
+                className="text-[10px] tracking-[0.2em] uppercase text-white/35 px-2.5 py-1 border border-white/10 hover:border-white/25 hover:text-white/50 transition-all duration-500"
               >
                 {tag}
               </span>
             ))}
+            {project.tags.length > 4 && (
+              <span className="text-[10px] tracking-[0.2em] uppercase text-white/20 px-2.5 py-1">
+                +{project.tags.length - 4}
+              </span>
+            )}
           </div>
         )}
       </div>

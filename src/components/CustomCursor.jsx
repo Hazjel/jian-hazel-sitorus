@@ -24,18 +24,28 @@ const CustomCursor = () => {
     };
 
     const handleMouseEnter = () => {
-      gsap.to(cursor, { scale: 2, opacity: 0.5, duration: 0.4 });
+      gsap.to(cursor, {
+        scale: 2.5,
+        opacity: 0.4,
+        duration: 0.4,
+      });
+      gsap.to(dot, { scale: 0.5, opacity: 0.8, duration: 0.3 });
     };
 
     const handleMouseLeave = () => {
-      gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.4 });
+      gsap.to(cursor, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.4,
+      });
+      gsap.to(dot, { scale: 1, opacity: 1, duration: 0.3 });
     };
 
     window.addEventListener("mousemove", moveCursor);
 
     // Add hover effect to interactive elements
     const addHoverListeners = () => {
-      const interactives = document.querySelectorAll("a, button, input, textarea");
+      const interactives = document.querySelectorAll("a, button, input, textarea, [role='button']");
       interactives.forEach((el) => {
         el.addEventListener("mouseenter", handleMouseEnter);
         el.addEventListener("mouseleave", handleMouseLeave);
@@ -65,11 +75,12 @@ const CustomCursor = () => {
     <>
       <div
         ref={cursorRef}
-        className="custom-cursor hidden md:block fixed top-0 left-0 w-8 h-8 border border-white/30 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
+        className="custom-cursor hidden md:block fixed top-0 left-0 w-8 h-8 border border-white/20 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
+        style={{ transition: "border-color 0.4s ease" }}
       />
       <div
         ref={cursorDotRef}
-        className="custom-cursor-dot hidden md:block fixed top-0 left-0 w-1 h-1 bg-white rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
+        className="custom-cursor-dot hidden md:block fixed top-0 left-0 w-1.5 h-1.5 bg-white rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
       />
     </>
   );

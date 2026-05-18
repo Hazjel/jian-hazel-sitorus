@@ -137,7 +137,7 @@ const AboutSection = () => {
           <div className="lg:col-span-5">
             <div
               ref={imageContainerRef}
-              className="relative aspect-[4/5] overflow-hidden"
+              className="relative aspect-[4/5] overflow-hidden group"
             >
               <img
                 ref={imageRef}
@@ -146,6 +146,15 @@ const AboutSection = () => {
                 className="absolute inset-0 w-full h-[120%] object-cover object-[center_20%] grayscale hover:grayscale-0 transition-all duration-[1500ms]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/50 via-transparent to-transparent" />
+
+              {/* Hover accent overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1a0a2e]/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+
+              {/* Corner accents */}
+              <div className="absolute top-0 left-0 w-8 h-px bg-white/20" />
+              <div className="absolute top-0 left-0 w-px h-8 bg-white/20" />
+              <div className="absolute bottom-0 right-0 w-8 h-px bg-white/20" />
+              <div className="absolute bottom-0 right-0 w-px h-8 bg-white/20" />
             </div>
             {/* Image caption */}
             <div className="mt-4 flex items-center justify-between text-[10px] tracking-[0.3em] uppercase text-white/30">
@@ -171,8 +180,8 @@ const AboutSection = () => {
             <div className="about-info-grid pt-12 mt-4 border-t border-white/10">
               <div className="grid grid-cols-2 gap-x-8 gap-y-10">
                 {info.map((item) => (
-                  <div key={item.label} className="about-info-item">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3">
+                  <div key={item.label} className="about-info-item group">
+                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3 group-hover:text-white/50 transition-colors duration-500">
                       {item.label}
                     </span>
                     <p className="text-white/85 text-sm md:text-base font-light tracking-[-0.01em]">

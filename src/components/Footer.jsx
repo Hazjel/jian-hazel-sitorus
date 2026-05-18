@@ -80,7 +80,10 @@ const Footer = () => {
 
   return (
     <footer ref={footerRef} className="relative bg-[#050505] overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <div className="absolute top-0 left-0 w-full h-px section-divider" />
+
+      {/* Subtle aurora glow */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60vw] h-[30vh] bg-[#1a0a2e]/8 blur-[120px] pointer-events-none" />
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 py-24 md:py-32">
         {/* Large Brand Statement */}
@@ -114,7 +117,10 @@ const Footer = () => {
 
           {/* Local Time */}
           <div className="footer-item flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase text-white/40">
-            <span className="w-1.5 h-1.5 bg-emerald-400/60 rounded-full animate-pulse" />
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-40" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400/60" />
+            </span>
             <span>Bandung</span>
             <span className="text-white/60 font-mono tracking-wider">{time}</span>
             <span className="text-white/20">WIB</span>
@@ -143,10 +149,10 @@ const Footer = () => {
             ))}
             <button
               onClick={scrollToTop}
-              className="ml-2 p-2.5 border border-white/10 text-white/40 hover:text-white hover:border-white/40 transition-all duration-500"
+              className="ml-2 p-2.5 border border-white/10 text-white/40 hover:text-white hover:border-white/40 transition-all duration-500 group"
               aria-label="Scroll to top"
             >
-              <ArrowUp size={14} />
+              <ArrowUp size={14} className="transition-transform duration-500 group-hover:-translate-y-1" />
             </button>
           </div>
         </div>

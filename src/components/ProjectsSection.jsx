@@ -124,8 +124,15 @@ const ProjectsSection = () => {
 
         {/* Projects Grid */}
         {loading ? (
-          <div className="text-white/30 text-[11px] tracking-[0.4em] uppercase">
-            Loading...
+          <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-14 gap-y-20 md:gap-y-24">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="space-y-4">
+                <div className="aspect-video skeleton-pulse" />
+                <div className="h-3 w-20 skeleton-pulse" />
+                <div className="h-6 w-3/4 skeleton-pulse" />
+                <div className="h-4 w-full skeleton-pulse" />
+              </div>
+            ))}
           </div>
         ) : projects.length === 0 ? (
           <div className="text-white/30 text-[11px] tracking-[0.4em] uppercase">

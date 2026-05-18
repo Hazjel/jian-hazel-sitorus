@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, Mail, MapPin } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Send } from "lucide-react";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,6 +38,7 @@ const ContactSection = () => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -115,6 +116,7 @@ const ContactSection = () => {
   };
 
   const handleBlur = (field) => {
+    setFocusedField(null);
     validateField(field, formData[field]);
   };
 
@@ -166,9 +168,15 @@ const ContactSection = () => {
   };
 
   const contactInfo = [
-    { icon: Mail, label: "Email", value: "duojhs222@gmail.com" },
-    { icon: MapPin, label: "Location", value: "Bandung, Indonesia" },
+    { icon: Mail, label: "Email", value: "duojhs222@gmail.com", href: "mailto:duojhs222@gmail.com" },
+    { icon: MapPin, label: "Location", value: "Bandung, Indonesia", href: null },
   ];
+
+  const getFieldBorderClass = (field) => {
+    if (errors[field]) return "border-red-400/60";
+    if (focusedField === field) return "border-white/40";
+    return "border-white/15";
+  };
 
   return (
     <section
@@ -176,7 +184,7 @@ const ContactSection = () => {
       ref={sectionRef}
       className="relative py-32 md:py-40 lg:py-48 bg-[#050505]"
     >
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <div className="absolute top-0 left-0 w-full h-px section-divider" />
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
         {/* Section Header */}
@@ -204,25 +212,43 @@ const ContactSection = () => {
               interesting conversations. Feel free to reach out.
             </p>
 
-            <div className="space-y-8 pt-4">
-              {contactInfo.map((item) => (
-                <div
-                  key={item.label}
-                  className="contact-info-item flex items-start gap-5"
-                >
-                  <div className="p-3 border border-white/10 shrink-0">
-                    <item.icon className="w-4 h-4 text-white/50" />
+            <div className="space-y-6 pt-4">
+              {contactInfo.map((item) => {
+                const content = (
+                  <div className="contact-info-item group flex items-start gap-5 glow-line pb-5">
+                    <div className="p-3 border border-white/10 shrink-0 group-hover:border-white/30 transition-colors duration-500">
+                      <item.icon className="w-4 h-4 text-white/50 group-hover:text-white/80 transition-colors duration-500" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-1.5">
+                        {item.label}
+                      </span>
+                      <p className="text-white/80 text-sm md:text-base font-light break-all group-hover:text-white transition-colors duration-500">
+                        {item.value}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-1.5">
-                      {item.label}
-                    </span>
-                    <p className="text-white/80 text-sm md:text-base font-light break-all">
-                      {item.value}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+
+                return item.href ? (
+                  <a key={item.label} href={item.href} className="block">
+                    {content}
+                  </a>
+                ) : (
+                  <div key={item.label}>{content}</div>
+                );
+              })}
+            </div>
+
+            {/* Status indicator */}
+            <div className="contact-info-item flex items-center gap-3 pt-4">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-40" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400/80" />
+              </span>
+              <span className="text-[10px] tracking-[0.3em] uppercase text-white/40">
+                Available for work
+              </span>
             </div>
           </div>
 
@@ -242,10 +268,9 @@ const ContactSection = () => {
                   placeholder="Your name"
                   value={formData.name}
                   onChange={(e) => handleChange("name", e.target.value)}
+                  onFocus={() => setFocusedField("name")}
                   onBlur={() => handleBlur("name")}
-                  className={`w-full bg-transparent border-b ${
-                    errors.name ? "border-red-400/60" : "border-white/15"
-                  } pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none focus:border-white/60 transition-colors duration-500`}
+                  className={`w-full bg-transparent border-b ${getFieldBorderClass("name")} pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500`}
                 />
                 {errors.name && (
                   <p className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
@@ -262,10 +287,9 @@ const ContactSection = () => {
                   placeholder="your@email.com"
                   value={formData.email}
                   onChange={(e) => handleChange("email", e.target.value)}
+                  onFocus={() => setFocusedField("email")}
                   onBlur={() => handleBlur("email")}
-                  className={`w-full bg-transparent border-b ${
-                    errors.email ? "border-red-400/60" : "border-white/15"
-                  } pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none focus:border-white/60 transition-colors duration-500`}
+                  className={`w-full bg-transparent border-b ${getFieldBorderClass("email")} pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500`}
                 />
                 {errors.email && (
                   <p className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
@@ -283,31 +307,44 @@ const ContactSection = () => {
                 rows={5}
                 value={formData.message}
                 onChange={(e) => handleChange("message", e.target.value)}
+                onFocus={() => setFocusedField("message")}
                 onBlur={() => handleBlur("message")}
-                className={`w-full bg-transparent border-b ${
-                  errors.message ? "border-red-400/60" : "border-white/15"
-                } pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none focus:border-white/60 transition-colors duration-500 resize-none`}
+                className={`w-full bg-transparent border-b ${getFieldBorderClass("message")} pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500 resize-none`}
               />
-              {errors.message && (
-                <p className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
-                  {errors.message}
-                </p>
-              )}
+              <div className="flex items-center justify-between mt-2">
+                {errors.message ? (
+                  <p className="text-red-400/70 text-xs font-light tracking-wide">
+                    {errors.message}
+                  </p>
+                ) : (
+                  <span />
+                )}
+                <span className="text-[10px] tracking-[0.2em] text-white/20 font-mono">
+                  {formData.message.length}/1000
+                </span>
+              </div>
             </div>
             <div className="contact-form-field pt-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="group inline-flex items-center gap-4 text-white/80 text-xs tracking-[0.3em] uppercase hover:text-white transition-colors duration-500 disabled:opacity-40 py-4 pr-2 border-b border-white/20 hover:border-white/60"
+                className="group relative inline-flex items-center gap-4 text-white/80 text-xs tracking-[0.3em] uppercase hover:text-white transition-all duration-500 disabled:opacity-40 py-4 pr-2 border-b border-white/20 hover:border-white/60 overflow-hidden"
               >
-                {isSubmitting ? (
-                  "Sending..."
-                ) : (
-                  <>
-                    Send Message
-                    <ArrowRight className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-2" />
-                  </>
-                )}
+                {/* Shimmer on hover */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                <span className="relative z-10 flex items-center gap-4">
+                  {isSubmitting ? (
+                    <>
+                      <span className="inline-block w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Send Message
+                      <Send className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    </>
+                  )}
+                </span>
               </button>
             </div>
           </form>

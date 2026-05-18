@@ -117,10 +117,10 @@ const Navbar = () => {
                   <span className="relative">
                     {item.name}
                     <span
-                      className={`absolute -bottom-1 left-0 h-px bg-white/60 transition-all duration-500 ${
+                      className={`absolute -bottom-1 left-0 h-px transition-all duration-500 ${
                         activeSection === item.href.replace("#", "")
-                          ? "w-full"
-                          : "w-0 group-hover:w-full"
+                          ? "w-full bg-white/60"
+                          : "w-0 group-hover:w-full bg-white/60"
                       }`}
                     />
                   </span>
@@ -134,7 +134,10 @@ const Navbar = () => {
               onClick={(e) => scrollToSection(e, "#contact")}
               className="hidden md:inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-white/60 hover:text-white transition-colors duration-500 group"
             >
-              <span className="w-1.5 h-1.5 bg-emerald-400/70 rounded-full animate-pulse" />
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-40" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400/70" />
+              </span>
               Available
             </a>
 
@@ -158,10 +161,10 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Scroll Progress Bar */}
+        {/* Scroll Progress Bar — gradient accent */}
         <div className="absolute bottom-0 left-0 w-full h-px bg-transparent">
           <div
-            className="h-full bg-white/30"
+            className="h-full bg-white/25"
             style={{ width: `${scrollProgress}%`, transition: "width 0.1s linear" }}
           />
         </div>
