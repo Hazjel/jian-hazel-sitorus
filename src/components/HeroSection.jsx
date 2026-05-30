@@ -131,8 +131,7 @@ const HeroSection = () => {
   useEffect(() => {
     const phrases = [
       "Software Enthusiast",
-      "AI & DS Enthusiast",
-      "Fullstack Developer",
+      "AI & Data Science Enthusiast",
       "Problem Solver",
     ];
 
