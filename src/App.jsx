@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,19 +10,24 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/use-theme";
 import PageTransition from "./components/PageTransition";
 import CustomCursor from "./components/CustomCursor";
-import Index from "./pages/Index";
-import Work from "./pages/Work";
-import ProjectDetail from "./pages/ProjectDetail";
-import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import AdminLayout from "./components/layouts/AdminLayout";
-import Dashboard from "./pages/admin/Dashboard";
-import Projects from "./pages/admin/Projects";
-import Messages from "./pages/admin/Messages";
-import Skills from "./pages/admin/Skills";
-import Settings from "./pages/admin/Settings";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageTracker from "./components/PageTracker";
+
+// Eager — critical path
+import Index from "./pages/Index";
+
+// Lazy — split by route
+const Work = lazy(() => import("./pages/Work"));
+const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Login = lazy(() => import("./pages/Login"));
+const AdminLayout = lazy(() => import("./components/layouts/AdminLayout"));
+const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const Projects = lazy(() => import("./pages/admin/Projects"));
+const Messages = lazy(() => import("./pages/admin/Messages"));
+const Skills = lazy(() => import("./pages/admin/Skills"));
+const Experiences = lazy(() => import("./pages/admin/Experiences"));
+const Settings = lazy(() => import("./pages/admin/Settings"));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -87,27 +92,30 @@ const AnimatedRoutes = () => {
     <>
       <CursorWrapper />
       <PageTransition key={location.pathname}>
-        <Routes location={location}>
-          <Route path="/" element={<Index />} />
-          <Route path="/work" element={<Work />} />
-          <Route path="/project/:slug" element={<ProjectDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="projects" element={<Projects />} />
-            <Route path="messages" element={<Messages />} />
-            <Route path="skills" element={<Skills />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<div className="min-h-screen bg-[#0a0a0a]" />}>
+          <Routes location={location}>
+            <Route path="/" element={<Index />} />
+            <Route path="/work" element={<Work />} />
+            <Route path="/project/:slug" element={<ProjectDetail />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="projects" element={<Projects />} />
+              <Route path="messages" element={<Messages />} />
+              <Route path="skills" element={<Skills />} />
+              <Route path="experiences" element={<Experiences />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </PageTransition>
     </>
   );

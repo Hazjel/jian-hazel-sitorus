@@ -69,7 +69,7 @@ const ProjectCard = ({ project, index }) => {
   return (
     <div ref={cardRef} className="project-card group relative">
       {/* Project Image */}
-      <Link to={`/project/${project.slug}`} className="block">
+      <Link to={`/project/${project.slug}`} className="block cursor-pointer">
         <div
           ref={imageContainerRef}
           className="spotlight-card relative aspect-video overflow-hidden bg-white/[0.02] border border-white/5 mb-7 transition-all duration-700 group-hover:border-white/15"

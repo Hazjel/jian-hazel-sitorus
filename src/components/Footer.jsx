@@ -40,7 +40,14 @@ const Footer = () => {
   }, []);
 
   useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const ctx = gsap.context(() => {
+      if (prefersReduced) {
+        gsap.set([".footer-brand", ".footer-item"], { opacity: 1, y: 0 });
+        return;
+      }
+
       gsap.fromTo(
         ".footer-brand",
         { y: 40, opacity: 0 },

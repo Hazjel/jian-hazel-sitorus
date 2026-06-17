@@ -10,6 +10,16 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Pencil, Trash2, ExternalLink, Github } from "lucide-react";
 import { toast } from "sonner";
 import ProjectDialog from "@/components/admin/ProjectDialog";
@@ -18,6 +28,7 @@ const Projects = () => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingProject, setEditingProject] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
 
     const fetchProjects = async () => {
         setLoading(true);
@@ -41,17 +52,18 @@ const Projects = () => {
         fetchProjects();
     }, []);
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this project?")) return;
-
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
         try {
-            const { error } = await supabase.from("projects").delete().eq("id", id);
+            const { error } = await supabase.from("projects").delete().eq("id", deleteTarget.id);
             if (error) throw error;
             toast.success("Project deleted successfully");
             fetchProjects();
         } catch (error) {
             toast.error("Failed to delete project");
             console.error(error);
+        } finally {
+            setDeleteTarget(null);
         }
     };
 
@@ -158,7 +170,7 @@ const Projects = () => {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                                                    onClick={() => handleDelete(project.id)}
+                                                    onClick={() => setDeleteTarget({ id: project.id, label: project.title })}
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
@@ -171,6 +183,26 @@ const Projects = () => {
                     </Table>
                 </CardContent>
             </Card>
+
+            <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete project?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This will permanently delete <strong>{deleteTarget?.label}</strong>. This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={confirmDelete}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 };

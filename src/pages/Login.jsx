@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Lock, Mail, ArrowRight } from "lucide-react";
+import { Loader2, Lock, Mail, ArrowRight, Eye, EyeOff } from "lucide-react";
 import gsap from "gsap";
 
 const Login = () => {
@@ -10,24 +10,30 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const containerRef = useRef(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const ctx = gsap.context(() => {
+      if (prefersReduced) {
+        gsap.set([".login-card", ".login-field"], { opacity: 1, y: 0, scale: 1 });
+        return;
+      }
+
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
       tl.fromTo(
         ".login-card",
         { y: 40, opacity: 0, scale: 0.98 },
         { y: 0, opacity: 1, scale: 1, duration: 1.2 }
-      )
-        .fromTo(
-          ".login-field",
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, stagger: 0.1 },
-          "-=0.6"
-        );
+      ).fromTo(
+        ".login-field",
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.1 },
+        "-=0.6"
+      );
     }, containerRef);
 
     return () => ctx.revert();
@@ -99,6 +105,7 @@ const Login = () => {
                 id="email"
                 type="email"
                 placeholder="admin@example.com"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onFocus={() => setFocusedField("email")}
@@ -124,8 +131,9 @@ const Login = () => {
               <Lock className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
+                autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
                 onFocus={() => setFocusedField("password")}
                 onBlur={() => setFocusedField(null)}
@@ -134,8 +142,16 @@ const Login = () => {
                   focusedField === "password"
                     ? "border-white/40"
                     : "border-white/15"
-                } pb-3 pl-7 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500`}
+                } pb-3 pl-7 pr-8 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500`}
               />
+              <button
+                type="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors duration-300 p-1"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 

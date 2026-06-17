@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FolderKanban, Eye, MessageSquare, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
@@ -15,9 +16,9 @@ const Dashboard = () => {
         },
         {
             title: "Total Views",
-            value: "1,234",
+            value: "...",
             icon: Eye,
-            description: "+15% from last month",
+            description: "Loading...",
             color: "text-green-500",
             bg: "bg-green-100 dark:bg-green-900/20",
         },
@@ -31,9 +32,9 @@ const Dashboard = () => {
         },
         {
             title: "Engagement Rate",
-            value: "5.4%",
+            value: "-",
             icon: TrendingUp,
-            description: "+0.4% from last month",
+            description: "No analytics data yet",
             color: "text-purple-500",
             bg: "bg-purple-100 dark:bg-purple-900/20",
         },
@@ -136,8 +137,8 @@ const Dashboard = () => {
                     </CardHeader>
                     <CardContent className="h-40 flex items-center justify-center border-t border-muted">
                         <div className="flex flex-col gap-3 max-w-sm w-full">
-                            <a href="/admin/projects" className="text-sm px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-center hover:bg-secondary/80 transition-colors">Manage Projects</a>
-                            <a href="/admin/skills" className="text-sm px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-center hover:bg-secondary/80 transition-colors">Update Tech Stack</a>
+                            <Link to="/admin/projects" className="text-sm px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-center hover:bg-secondary/80 transition-colors">Manage Projects</Link>
+                            <Link to="/admin/skills" className="text-sm px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-center hover:bg-secondary/80 transition-colors">Update Tech Stack</Link>
                         </div>
                     </CardContent>
                 </Card>

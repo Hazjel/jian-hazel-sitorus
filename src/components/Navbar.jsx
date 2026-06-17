@@ -4,10 +4,15 @@ import gsap from "gsap";
 const navItems = [
   { name: "Home", href: "#home", num: "00" },
   { name: "About", href: "#about", num: "01" },
-  { name: "Skills", href: "#skills", num: "02" },
-  { name: "Work", href: "#projects", num: "03" },
-  { name: "Contact", href: "#contact", num: "04" },
+  { name: "Experience", href: "#experience", num: "02" },
+  { name: "Skills", href: "#skills", num: "03" },
+  { name: "Work", href: "#projects", num: "04" },
+  { name: "Contact", href: "#contact", num: "05" },
 ];
+
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +50,7 @@ const Navbar = () => {
       lastScrollY.current = currentScrollY;
 
       // Active section detection
-      const sections = ["home", "about", "skills", "projects", "contact"];
+      const sections = ["home", "about", "experience", "skills", "projects", "contact"];
       for (const section of [...sections].reverse()) {
         const element = document.getElementById(section);
         if (element) {
@@ -146,6 +151,8 @@ const Navbar = () => {
               className="md:hidden relative w-10 h-10 flex flex-col justify-center items-end gap-1.5 z-[101]"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
             >
               <span
                 className={`h-px bg-white/80 transition-all duration-500 ${
@@ -165,18 +172,20 @@ const Navbar = () => {
         <div className="absolute bottom-0 left-0 w-full h-px bg-transparent">
           <div
             className="h-full bg-white/25"
-            style={{ width: `${scrollProgress}%`, transition: "width 0.1s linear" }}
+            style={{ width: `${scrollProgress}%`, transition: "width 0.1s ease-out" }}
           />
         </div>
       </nav>
 
       {/* Mobile Menu Overlay */}
       <div
+        id="mobile-menu"
         className={`fixed inset-0 z-[99] bg-[#0a0a0a] md:hidden transition-all duration-700 ${
           isOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
+        aria-hidden={!isOpen}
       >
         <div className="flex flex-col h-full px-6 pt-28 pb-12">
           <div className="flex flex-col gap-6 flex-1">
@@ -190,10 +199,12 @@ const Navbar = () => {
                 }}
                 className="flex items-baseline gap-4 group"
                 style={{
-                  transitionDelay: isOpen ? `${150 + index * 80}ms` : "0ms",
                   opacity: isOpen ? 1 : 0,
-                  transform: isOpen ? "translateY(0)" : "translateY(20px)",
-                  transition: "all 0.7s cubic-bezier(0.16, 1, 0.3, 1)",
+                  transform: isOpen || prefersReducedMotion ? "translateY(0)" : "translateY(20px)",
+                  transitionProperty: "opacity, transform",
+                  transitionDuration: prefersReducedMotion ? "0.1s" : "0.7s",
+                  transitionTimingFunction: prefersReducedMotion ? "linear" : "cubic-bezier(0.16, 1, 0.3, 1)",
+                  transitionDelay: isOpen && !prefersReducedMotion ? `${150 + index * 80}ms` : "0ms",
                 }}
               >
                 <span className="text-white/20 text-xs tracking-[0.3em] font-mono">

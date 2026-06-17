@@ -10,6 +10,16 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Trash2, MailOpen, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -17,6 +27,7 @@ import { format } from "date-fns";
 const Messages = () => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [deleteTarget, setDeleteTarget] = useState(null);
 
     const fetchMessages = async () => {
         setLoading(true);
@@ -40,16 +51,17 @@ const Messages = () => {
         fetchMessages();
     }, []);
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this message?")) return;
-
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
         try {
-            const { error } = await supabase.from("messages").delete().eq("id", id);
+            const { error } = await supabase.from("messages").delete().eq("id", deleteTarget.id);
             if (error) throw error;
             toast.success("Message deleted");
             fetchMessages();
         } catch (error) {
             toast.error("Failed to delete message");
+        } finally {
+            setDeleteTarget(null);
         }
     };
 
@@ -62,11 +74,9 @@ const Messages = () => {
 
             if (error) throw error;
 
-            // Update local state to reflect change immediately
             setMessages(messages.map(m =>
                 m.id === message.id ? { ...m, is_read: !m.is_read } : m
             ));
-
         } catch (error) {
             toast.error("Failed to update status");
         }
@@ -154,7 +164,7 @@ const Messages = () => {
                                                 variant="ghost"
                                                 size="icon"
                                                 className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                                                onClick={() => handleDelete(message.id)}
+                                                onClick={() => setDeleteTarget({ id: message.id, label: `message from ${message.name}` })}
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>
@@ -166,6 +176,26 @@ const Messages = () => {
                     </Table>
                 </CardContent>
             </Card>
+
+            <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete message?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This will permanently delete the {deleteTarget?.label}. This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={confirmDelete}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 };

@@ -147,7 +147,7 @@ const Work = () => {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-[#0a0a0a] text-white cinematic-portfolio cursor-none md:cursor-none"
+      className="min-h-screen bg-[#0a0a0a] text-white cinematic-portfolio"
     >
       {/* Grain overlay */}
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none grain-texture z-[1]" />
@@ -305,8 +305,16 @@ const Work = () => {
       {/* Grid */}
       <section className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 pb-24 md:pb-32">
         {loading ? (
-          <div className="py-24 text-center text-white/30 text-[11px] tracking-[0.4em] uppercase">
-            Loading...
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 md:gap-x-10 gap-y-16 md:gap-y-20">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="space-y-4">
+                <div className="aspect-video skeleton-pulse" />
+                <div className="h-2.5 w-16 skeleton-pulse" />
+                <div className="h-6 w-3/4 skeleton-pulse" />
+                <div className="h-3.5 w-full skeleton-pulse" />
+                <div className="h-3.5 w-2/3 skeleton-pulse" />
+              </div>
+            ))}
           </div>
         ) : filteredProjects.length === 0 ? (
           <div className="py-24 flex flex-col items-center gap-6 text-center">

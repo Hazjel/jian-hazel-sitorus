@@ -6,8 +6,16 @@ const CustomCursor = () => {
   const cursorDotRef = useRef(null);
 
   useEffect(() => {
+    const isPointerDevice = window.matchMedia("(pointer: fine)").matches;
+    if (!isPointerDevice) return;
+
+    document.body.style.cursor = "none";
+
     const cursor = cursorRef.current;
     const dot = cursorDotRef.current;
+
+    if (cursor) cursor.style.display = "block";
+    if (dot) dot.style.display = "block";
 
     const moveCursor = (e) => {
       gsap.to(cursor, {
@@ -62,6 +70,7 @@ const CustomCursor = () => {
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
+      document.body.style.cursor = "";
       window.removeEventListener("mousemove", moveCursor);
       observer.disconnect();
       interactives.forEach((el) => {
@@ -75,12 +84,13 @@ const CustomCursor = () => {
     <>
       <div
         ref={cursorRef}
-        className="custom-cursor hidden md:block fixed top-0 left-0 w-8 h-8 border border-white/20 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
-        style={{ transition: "border-color 0.4s ease" }}
+        className="custom-cursor fixed top-0 left-0 w-8 h-8 border border-white/20 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
+        style={{ transition: "border-color 0.4s ease", display: "none" }}
       />
       <div
         ref={cursorDotRef}
-        className="custom-cursor-dot hidden md:block fixed top-0 left-0 w-1.5 h-1.5 bg-white rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
+        className="custom-cursor-dot fixed top-0 left-0 w-1.5 h-1.5 bg-white rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
+        style={{ display: "none" }}
       />
     </>
   );

@@ -158,7 +158,14 @@ const SkillsSection = () => {
   useEffect(() => {
     if (loading) return;
 
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const ctx = gsap.context(() => {
+      if (prefersReduced) {
+        gsap.set([".skills-title", ".skill-category", ".skill-item", ".skills-marquee-wrap"], { opacity: 1, y: 0 });
+        return;
+      }
+
       gsap.fromTo(
         ".skills-title",
         { y: 60, opacity: 0 },
@@ -238,7 +245,7 @@ const SkillsSection = () => {
     <section
       id="skills"
       ref={sectionRef}
-      className="relative py-32 md:py-40 lg:py-48 bg-[#050505] aurora-bg"
+      className="scroll-mt-20 relative py-32 md:py-40 lg:py-48 bg-[#050505] aurora-bg"
     >
       {/* Gradient divider */}
       <div className="absolute top-0 left-0 w-full h-px section-divider" />
@@ -248,7 +255,7 @@ const SkillsSection = () => {
         <div className="mb-20 md:mb-28 lg:mb-32">
           <div className="flex items-center gap-4 mb-6">
             <span className="skills-title text-white/20 text-xs tracking-[0.4em] font-mono">
-              02
+              03
             </span>
             <span className="skills-title w-12 h-px bg-white/20" />
             <span className="skills-title text-white/40 text-[11px] tracking-[0.4em] uppercase">

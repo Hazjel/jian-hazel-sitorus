@@ -46,7 +46,14 @@ const ContactSection = () => {
   const [focusedField, setFocusedField] = useState(null);
 
   useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const ctx = gsap.context(() => {
+      if (prefersReduced) {
+        gsap.set([".contact-title", ".contact-form-field", ".contact-info-item"], { opacity: 1, y: 0, x: 0 });
+        return;
+      }
+
       gsap.fromTo(
         ".contact-title",
         { y: 60, opacity: 0 },
@@ -199,7 +206,7 @@ const ContactSection = () => {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative py-32 md:py-40 lg:py-48 bg-[#050505]"
+      className="scroll-mt-20 relative py-32 md:py-40 lg:py-48 bg-[#050505]"
     >
       <div className="absolute top-0 left-0 w-full h-px section-divider" />
 
@@ -208,7 +215,7 @@ const ContactSection = () => {
         <div className="mb-20 md:mb-28 lg:mb-32">
           <div className="flex items-center gap-4 mb-6">
             <span className="contact-title text-white/20 text-xs tracking-[0.4em] font-mono">
-              04
+              05
             </span>
             <span className="contact-title w-12 h-px bg-white/20" />
             <span className="contact-title text-white/40 text-[11px] tracking-[0.4em] uppercase">
@@ -277,66 +284,81 @@ const ContactSection = () => {
           >
             <div className="grid md:grid-cols-2 gap-8 md:gap-10">
               <div className="contact-form-field">
-                <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
-                  Name
+                <label htmlFor="contact-name" className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
+                  Name <span className="text-white/20">*</span>
                 </label>
                 <input
+                  id="contact-name"
                   type="text"
                   placeholder="Your name"
+                  autoComplete="name"
+                  required
                   value={formData.name}
                   onChange={(e) => handleChange("name", e.target.value)}
                   onFocus={() => setFocusedField("name")}
                   onBlur={() => handleBlur("name")}
+                  aria-describedby={errors.name ? "contact-name-error" : undefined}
+                  aria-invalid={!!errors.name}
                   className={`w-full bg-transparent border-b ${getFieldBorderClass("name")} pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500`}
                 />
                 {errors.name && (
-                  <p className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
+                  <p id="contact-name-error" role="alert" className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
                     {errors.name}
                   </p>
                 )}
               </div>
               <div className="contact-form-field">
-                <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
-                  Email
+                <label htmlFor="contact-email" className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
+                  Email <span className="text-white/20">*</span>
                 </label>
                 <input
+                  id="contact-email"
                   type="email"
                   placeholder="your@email.com"
+                  autoComplete="email"
+                  required
                   value={formData.email}
                   onChange={(e) => handleChange("email", e.target.value)}
                   onFocus={() => setFocusedField("email")}
                   onBlur={() => handleBlur("email")}
+                  aria-describedby={errors.email ? "contact-email-error" : undefined}
+                  aria-invalid={!!errors.email}
                   className={`w-full bg-transparent border-b ${getFieldBorderClass("email")} pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500`}
                 />
                 {errors.email && (
-                  <p className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
+                  <p id="contact-email-error" role="alert" className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
                     {errors.email}
                   </p>
                 )}
               </div>
             </div>
             <div className="contact-form-field">
-              <label className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
-                Message
+              <label htmlFor="contact-message" className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
+                Message <span className="text-white/20">*</span>
               </label>
               <textarea
+                id="contact-message"
                 placeholder="Tell me about your project..."
                 rows={5}
+                autoComplete="off"
+                required
                 value={formData.message}
                 onChange={(e) => handleChange("message", e.target.value)}
                 onFocus={() => setFocusedField("message")}
                 onBlur={() => handleBlur("message")}
+                aria-describedby={errors.message ? "contact-message-error" : "contact-message-count"}
+                aria-invalid={!!errors.message}
                 className={`w-full bg-transparent border-b ${getFieldBorderClass("message")} pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500 resize-none`}
               />
               <div className="flex items-center justify-between mt-2">
                 {errors.message ? (
-                  <p className="text-red-400/70 text-xs font-light tracking-wide">
+                  <p id="contact-message-error" role="alert" className="text-red-400/70 text-xs font-light tracking-wide">
                     {errors.message}
                   </p>
                 ) : (
                   <span />
                 )}
-                <span className="text-[10px] tracking-[0.2em] text-white/20 font-mono">
+                <span id="contact-message-count" className="text-[10px] tracking-[0.2em] text-white/20 font-mono">
                   {formData.message.length}/1000
                 </span>
               </div>
@@ -345,7 +367,7 @@ const ContactSection = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="group relative inline-flex items-center gap-4 text-white/80 text-xs tracking-[0.3em] uppercase hover:text-white transition-all duration-500 disabled:opacity-40 py-4 pr-2 border-b border-white/20 hover:border-white/60 overflow-hidden"
+                className="group relative inline-flex items-center gap-4 text-white/80 text-xs tracking-[0.3em] uppercase hover:text-white transition-all duration-500 disabled:opacity-40 py-4 pr-2 border-b border-white/20 hover:border-violet-400/30 overflow-hidden"
               >
                 {/* Shimmer on hover */}
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />

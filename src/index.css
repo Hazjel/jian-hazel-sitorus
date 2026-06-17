@@ -113,6 +113,19 @@
     color: #fff;
   }
 
+  /* Focus rings — keyboard only, not mouse click */
+  :focus-visible {
+    outline: 1.5px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  /* Inputs already show focus via border-b color change */
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+  }
+
   /* Hide scrollbar for cinematic feel */
   ::-webkit-scrollbar {
     width: 0px;

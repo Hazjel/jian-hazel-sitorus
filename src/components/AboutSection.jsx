@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Download } from "lucide-react";
 import profilePhoto from "@/assets/profile-photo.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -18,7 +19,15 @@ const AboutSection = () => {
   ];
 
   useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const ctx = gsap.context(() => {
+      if (prefersReduced) {
+        gsap.set([".about-title-line", ".about-text", ".about-info-item"], { opacity: 1, y: 0 });
+        gsap.set(imageContainerRef.current, { clipPath: "inset(0% 0% 0% 0%)" });
+        return;
+      }
+
       // Section title reveal
       gsap.fromTo(
         ".about-title-line",
@@ -108,7 +117,7 @@ const AboutSection = () => {
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-32 md:py-40 lg:py-48 bg-[#0a0a0a]"
+      className="scroll-mt-20 relative py-32 md:py-40 lg:py-48 bg-[#0a0a0a]"
     >
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
         {/* Section Header */}
@@ -143,7 +152,9 @@ const AboutSection = () => {
                 ref={imageRef}
                 src={profilePhoto}
                 alt="Jian Hazel Sitorus"
-                className="absolute inset-0 w-full h-[120%] object-cover object-[center_20%] grayscale hover:grayscale-0 transition-all duration-[1500ms]"
+                width={800}
+                height={1000}
+                className="absolute inset-0 w-full h-[120%] object-cover object-[center_20%] grayscale hover:grayscale-0 transition-[filter] duration-[1500ms]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/50 via-transparent to-transparent" />
 
@@ -189,6 +200,18 @@ const AboutSection = () => {
                     </p>
                   </div>
                 ))}
+              </div>
+
+              {/* CV Download */}
+              <div className="about-info-item mt-10 pt-10 border-t border-white/5">
+                <a
+                  href="/CV_Jian Hazel Sitorus.pdf"
+                  download="Jian-Hazel-Sitorus-CV.pdf"
+                  className="group inline-flex items-center gap-4 text-white/60 text-xs tracking-[0.3em] uppercase hover:text-white transition-all duration-500 py-4 border-b border-white/15 hover:border-white/50"
+                >
+                  Download CV
+                  <Download className="w-4 h-4 transition-transform duration-500 group-hover:translate-y-0.5" />
+                </a>
               </div>
             </div>
           </div>

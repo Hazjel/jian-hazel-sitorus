@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -11,6 +11,9 @@ const HeroSection = () => {
   const overlayRef = useRef(null);
   const scrollIndicatorRef = useRef(null);
   const auroraRef = useRef(null);
+  const typedTextRef = useRef(null);
+  const typedCursorRef = useRef(null);
+  const heroCTARef = useRef(null);
 
   // Parallax mouse movement for aurora orbs
   const handleMouseMove = useCallback((e) => {
@@ -32,13 +35,32 @@ const HeroSection = () => {
   }, []);
 
   useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) return;
+
     const section = sectionRef.current;
     section.addEventListener("mousemove", handleMouseMove);
     return () => section.removeEventListener("mousemove", handleMouseMove);
   }, [handleMouseMove]);
 
   useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const ctx = gsap.context(() => {
+      if (prefersReduced) {
+        gsap.set(overlayRef.current, { scaleY: 0 });
+        gsap.set(".hero-gradient-bg", { opacity: 1 });
+        gsap.set(".hero-char", { y: 0, opacity: 1, rotateX: 0 });
+        gsap.set(".hero-char-last", { y: 0, opacity: 1, rotateX: 0 });
+        gsap.set(subRef.current, { y: 0, opacity: 1 });
+        gsap.set([".hero-top-marker", ".hero-side-label"], { opacity: 1, y: 0 });
+        gsap.set(".hero-particle", { opacity: 1 });
+        gsap.set(".aurora-orb", { scale: 1, opacity: 1 });
+        gsap.set(scrollIndicatorRef.current, { opacity: 1 });
+        gsap.set(heroCTARef.current, { opacity: 1, y: 0 });
+        return;
+      }
+
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
       // Reveal overlay wipe
@@ -109,19 +131,26 @@ const HeroSection = () => {
           { opacity: 0 },
           { opacity: 1, duration: 1 },
           "-=0.4"
+        )
+        .fromTo(
+          heroCTARef.current,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 1, ease: "power3.out" },
+          "-=0.6"
         );
 
-      // Parallax heading on scroll
-      gsap.to(headingRef.current, {
-        yPercent: -30,
-        opacity: 0.2,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "80% top",
-          scrub: 1,
-        },
-      });
+      if (!prefersReduced) {
+        gsap.to(headingRef.current, {
+          yPercent: -30,
+          opacity: 0.2,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "80% top",
+            scrub: 1,
+          },
+        });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -140,10 +169,17 @@ const HeroSection = () => {
     let isDeleting = false;
     let timeout;
 
-    const typedEl = document.querySelector(".hero-typed-text");
-    const cursorEl = document.querySelector(".hero-typed-cursor");
+    const typedEl = typedTextRef.current;
+    const cursorEl = typedCursorRef.current;
 
     if (!typedEl || !cursorEl) return;
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      typedEl.textContent = phrases[0];
+      cursorEl.style.display = "none";
+      return;
+    }
 
     gsap.to(cursorEl, {
       opacity: 0,
@@ -190,6 +226,25 @@ const HeroSection = () => {
     };
   }, []);
 
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 30 }, (_, i) => ({
+        left: `${8 + Math.random() * 84}%`,
+        top: `${5 + Math.random() * 90}%`,
+        animationDelay: `${Math.random() * 8}s`,
+        animationDuration: `${8 + Math.random() * 12}s`,
+        width: `${1 + Math.random() * 2}px`,
+        height: `${1 + Math.random() * 2}px`,
+        background:
+          i % 5 === 0
+            ? "rgba(255, 255, 255, 0.25)"
+            : i % 7 === 0
+            ? "rgba(255, 255, 255, 0.15)"
+            : "rgba(255, 255, 255, 0.2)",
+      })),
+    []
+  );
+
   // Split text into characters for stagger animation
   const splitText = (text, className = "hero-char") =>
     text.split("").map((char, i) => (
@@ -209,7 +264,7 @@ const HeroSection = () => {
     <section
       id="home"
       ref={sectionRef}
-      className="hero-section relative h-screen w-full overflow-hidden flex items-center justify-center"
+      className="hero-section scroll-mt-20 relative h-[100dvh] w-full overflow-hidden flex items-center justify-center"
     >
       {/* Animated Gradient Background */}
       <div className="hero-gradient-bg absolute inset-0 z-0 opacity-0">
@@ -227,23 +282,11 @@ const HeroSection = () => {
 
       {/* Floating Particles — more particles for depth */}
       <div className="absolute inset-0 z-[5] overflow-hidden pointer-events-none">
-        {Array.from({ length: 30 }).map((_, i) => (
+        {particles.map((style, i) => (
           <div
             key={i}
             className="hero-particle absolute rounded-full animate-particle-float"
-            style={{
-              left: `${8 + Math.random() * 84}%`,
-              top: `${5 + Math.random() * 90}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${8 + Math.random() * 12}s`,
-              width: `${1 + Math.random() * 2}px`,
-              height: `${1 + Math.random() * 2}px`,
-              background: i % 5 === 0
-                ? "rgba(255, 255, 255, 0.25)"
-                : i % 7 === 0
-                ? "rgba(255, 255, 255, 0.15)"
-                : "rgba(255, 255, 255, 0.2)",
-            }}
+            style={style}
           />
         ))}
       </div>
@@ -297,14 +340,42 @@ const HeroSection = () => {
           <div className="flex items-center gap-4">
             <span className="w-10 h-px bg-gradient-to-r from-transparent to-white/30" />
             <p className="text-white/60 text-[11px] md:text-xs tracking-[0.4em] uppercase font-light">
-              <span className="hero-typed-text inline-block min-w-[12ch] text-center" />
-              <span className="hero-typed-cursor inline-block w-px h-[1em] bg-white/60 ml-1 align-middle" />
+              <span ref={typedTextRef} className="hero-typed-text inline-block min-w-[12ch] text-center" />
+              <span ref={typedCursorRef} className="hero-typed-cursor inline-block w-px h-[1em] bg-white/60 ml-1 align-middle" />
             </p>
             <span className="w-10 h-px bg-gradient-to-l from-transparent to-white/30" />
           </div>
           <p className="text-white/30 text-[10px] md:text-[11px] tracking-[0.3em] uppercase font-light">
             Informatics &mdash; Telkom University
           </p>
+        </div>
+
+        {/* Hero CTA */}
+        <div
+          ref={heroCTARef}
+          className="mt-12 md:mt-16 flex items-center gap-6 justify-center opacity-0"
+        >
+          <a
+            href="#projects"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="text-white/60 text-[11px] tracking-[0.3em] uppercase hover:text-white hover:border-violet-400/30 transition-colors duration-500 border-b border-white/20 pb-1"
+          >
+            View Work
+          </a>
+          <span className="w-1 h-1 rounded-full bg-white/20" />
+          <a
+            href="#contact"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="text-white/60 text-[11px] tracking-[0.3em] uppercase hover:text-white hover:border-violet-400/30 transition-colors duration-500 border-b border-white/20 pb-1"
+          >
+            Contact
+          </a>
         </div>
       </div>
 

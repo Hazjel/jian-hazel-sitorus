@@ -66,22 +66,24 @@ const ProjectsSection = () => {
         }
       );
 
-      // View All CTA reveal
-      gsap.fromTo(
-        ".projects-cta",
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: ".projects-cta",
-            start: "top 90%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
+      // View All CTA reveal — only if element exists
+      if (document.querySelector(".projects-cta")) {
+        gsap.fromTo(
+          ".projects-cta",
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: ".projects-cta",
+              start: "top 90%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -93,7 +95,7 @@ const ProjectsSection = () => {
     <section
       id="projects"
       ref={sectionRef}
-      className="relative py-32 md:py-40 lg:py-48 bg-[#0a0a0a]"
+      className="scroll-mt-20 relative py-32 md:py-40 lg:py-48 bg-[#0a0a0a]"
     >
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
         {/* Section Header */}
@@ -101,7 +103,7 @@ const ProjectsSection = () => {
           <div>
             <div className="flex items-center gap-4 mb-6">
               <span className="projects-title text-white/20 text-xs tracking-[0.4em] font-mono">
-                03
+                04
               </span>
               <span className="projects-title w-12 h-px bg-white/20" />
               <span className="projects-title text-white/40 text-[11px] tracking-[0.4em] uppercase">
@@ -155,7 +157,7 @@ const ProjectsSection = () => {
                 </p>
                 <Link
                   to="/work"
-                  className="group inline-flex items-center gap-4 text-white/80 text-xs tracking-[0.3em] uppercase hover:text-white transition-colors duration-500 py-4 border-b border-white/20 hover:border-white/60"
+                  className="group inline-flex items-center gap-4 text-white/80 text-xs tracking-[0.3em] uppercase hover:text-white transition-colors duration-500 py-4 border-b border-white/20 hover:border-violet-400/30"
                 >
                   View All Work
                   <span className="text-white/30 font-mono text-[10px] tracking-[0.2em]">
