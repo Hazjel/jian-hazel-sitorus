@@ -1,7 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, Mail, MapPin, Send } from "lucide-react";
+import { useState } from "react";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,120 +8,33 @@ const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-gsap.registerPlugin(ScrollTrigger);
-
 const contactSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, { message: "Name is required" })
-    .max(100, { message: "Name must be less than 100 characters" }),
-  email: z
-    .string()
-    .trim()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Please enter a valid email address" })
-    .max(255, { message: "Email must be less than 255 characters" }),
-  message: z
-    .string()
-    .trim()
-    .min(1, { message: "Message is required" })
-    .min(10, { message: "Message must be at least 10 characters" })
-    .max(1000, { message: "Message must be less than 1000 characters" }),
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  email: z.string().trim().min(1, "Email is required").email("Please enter a valid email address").max(255),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(1000, "Message must be less than 1000 characters"),
 });
 
 const ContactSection = () => {
-  const sectionRef = useRef(null);
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const ctx = gsap.context(() => {
-      if (prefersReduced) {
-        gsap.set([".contact-title", ".contact-form-field", ".contact-info-item"], { opacity: 1, y: 0, x: 0 });
-        return;
-      }
-
-      gsap.fromTo(
-        ".contact-title",
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-
-      gsap.fromTo(
-        ".contact-form-field",
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: ".contact-form",
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-
-      gsap.fromTo(
-        ".contact-info-item",
-        { x: -20, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.12,
-          scrollTrigger: {
-            trigger: ".contact-info",
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
 
   const validateField = (field, value) => {
     try {
       contactSchema.shape[field].parse(value);
       setErrors((prev) => ({ ...prev, [field]: undefined }));
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        setErrors((prev) => ({ ...prev, [field]: error.errors[0].message }));
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setErrors((prev) => ({ ...prev, [field]: err.errors[0].message }));
       }
     }
   };
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      validateField(field, value);
-    }
+    if (errors[field]) validateField(field, value);
   };
 
   const handleBlur = (field) => {
@@ -134,158 +44,101 @@ const ContactSection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const result = contactSchema.safeParse(formData);
-
     if (!result.success) {
       const fieldErrors = {};
-      result.error.errors.forEach((error) => {
-        if (error.path[0]) {
-          fieldErrors[error.path[0]] = error.message;
-        }
-      });
+      result.error.errors.forEach((err) => { if (err.path[0]) fieldErrors[err.path[0]] = err.message; });
       setErrors(fieldErrors);
       return;
     }
-
     setIsSubmitting(true);
     setErrors({});
-
     try {
-      const { error } = await supabase.from("messages").insert([
-        {
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-        },
-      ]);
-
+      const { error } = await supabase.from("messages").insert([{
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      }]);
       if (error) throw error;
-
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        {
-          from_name: formData.name,
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-        },
-        EMAILJS_PUBLIC_KEY
-      );
-
-      toast({
-        title: "Message Sent",
-        description: "Thank you for reaching out. I'll get back to you soon.",
-      });
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        from_name: formData.name,
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      }, EMAILJS_PUBLIC_KEY);
+      toast({ title: "Message Sent", description: "Thank you for reaching out. I'll get back to you soon." });
       setFormData({ name: "", email: "", message: "" });
-    } catch (error) {
-      console.error("Error sending message:", error);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again later.",
-        variant: "destructive",
-      });
+    } catch (err) {
+      console.error("Error sending message:", err);
+      toast({ title: "Error", description: "Failed to send message. Please try again later.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const contactInfo = [
-    { icon: Mail, label: "Email", value: "duojhs222@gmail.com", href: "mailto:duojhs222@gmail.com" },
-    { icon: MapPin, label: "Location", value: "Bandung, Indonesia", href: null },
-  ];
-
-  const getFieldBorderClass = (field) => {
-    if (errors[field]) return "border-red-400/60";
-    if (focusedField === field) return "border-white/40";
-    return "border-white/15";
+  const getInputClass = (field) => {
+    let cls = "input-raw";
+    if (errors[field]) cls += " input-error";
+    return cls;
   };
 
   return (
-    <section
-      id="contact"
-      ref={sectionRef}
-      className="scroll-mt-20 relative py-32 md:py-40 lg:py-48 bg-[#050505]"
-    >
-      <div className="absolute top-0 left-0 w-full h-px section-divider" />
-
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
-        {/* Section Header */}
-        <div className="mb-20 md:mb-28 lg:mb-32">
-          <div className="flex items-center gap-4 mb-6">
-            <span className="contact-title text-white/20 text-xs tracking-[0.4em] font-mono">
-              05
-            </span>
-            <span className="contact-title w-12 h-px bg-white/20" />
-            <span className="contact-title text-white/40 text-[11px] tracking-[0.4em] uppercase">
-              Get in Touch
-            </span>
+    <section id="contact" className="scroll-mt-16 bg-white border-b-[3px] border-black">
+      {/* Section header */}
+      <div className="border-b-[3px] border-black">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <div className="flex items-center gap-4 py-4">
+            <span className="section-label">05</span>
+            <div className="w-8 border-t-[3px] border-black/30" />
+            <span className="section-label">Get in Touch</span>
           </div>
-          <h2 className="contact-title font-display text-[clamp(2rem,5.5vw,5rem)] leading-[1.05] tracking-[-0.03em] text-white font-light max-w-4xl">
-            Let&apos;s create something
-            <span className="italic text-white/50"> extraordinary</span>
-          </h2>
         </div>
+      </div>
 
-        <div className="grid lg:grid-cols-12 gap-12 md:gap-16 lg:gap-20">
-          {/* Contact Info */}
-          <div className="contact-info lg:col-span-4 space-y-10 lg:pt-4">
-            <p className="text-white/60 text-base md:text-lg leading-[1.7] font-light">
-              I&apos;m open to collaborations, freelance opportunities, and
-              interesting conversations. Feel free to reach out.
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-16 md:py-24">
+        <h2 className="font-display text-black mb-16">
+          Let's Create Something Extraordinary
+        </h2>
+
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
+          {/* Contact info */}
+          <div className="lg:col-span-4 space-y-8">
+            <p className="text-base text-black/70 leading-relaxed">
+              I'm open to collaborations, freelance opportunities, and interesting
+              conversations. Feel free to reach out.
             </p>
 
-            <div className="space-y-6 pt-4">
-              {contactInfo.map((item) => {
-                const content = (
-                  <div className="contact-info-item group flex items-start gap-5 glow-line pb-5">
-                    <div className="p-3 border border-white/10 shrink-0 group-hover:border-white/30 transition-colors duration-500">
-                      <item.icon className="w-4 h-4 text-white/50 group-hover:text-white/80 transition-colors duration-500" />
-                    </div>
-                    <div>
-                      <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-1.5">
-                        {item.label}
-                      </span>
-                      <p className="text-white/80 text-sm md:text-base font-light break-all group-hover:text-white transition-colors duration-500">
-                        {item.value}
-                      </p>
-                    </div>
-                  </div>
-                );
-
-                return item.href ? (
-                  <a key={item.label} href={item.href} className="block">
-                    {content}
-                  </a>
-                ) : (
-                  <div key={item.label}>{content}</div>
-                );
-              })}
+            <div className="space-y-0 border-[3px] border-black">
+              <div className="p-5 border-b-[3px] border-black">
+                <p className="label-raw text-xs mb-2 text-black/50">Email</p>
+                <a
+                  href="mailto:duojhs222@gmail.com"
+                  className="font-mono-rb text-sm text-[#0000FF] hover:underline break-all"
+                >
+                  duojhs222@gmail.com
+                </a>
+              </div>
+              <div className="p-5">
+                <p className="label-raw text-xs mb-2 text-black/50">Location</p>
+                <p className="font-mono-rb text-sm text-black">Bandung, Indonesia</p>
+              </div>
             </div>
 
-            {/* Status indicator */}
-            <div className="contact-info-item flex items-center gap-3 pt-4">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-40" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400/80" />
-              </span>
-              <span className="text-[10px] tracking-[0.3em] uppercase text-white/40">
+            {/* Status */}
+            <div className="inline-flex items-center gap-3 border-[3px] border-[#008000] px-4 py-2">
+              <span className="w-2 h-2 rounded-full bg-[#008000] animate-pulse" />
+              <span className="font-mono-rb text-xs text-[#008000] uppercase tracking-widest">
                 Available for work
               </span>
             </div>
           </div>
 
-          {/* Contact Form */}
-          <form
-            onSubmit={handleSubmit}
-            className="contact-form lg:col-span-8 space-y-10"
-            noValidate
-          >
-            <div className="grid md:grid-cols-2 gap-8 md:gap-10">
-              <div className="contact-form-field">
-                <label htmlFor="contact-name" className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
-                  Name <span className="text-white/20">*</span>
+          {/* Contact form */}
+          <form onSubmit={handleSubmit} className="lg:col-span-8 space-y-6" noValidate>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="contact-name" className="label-raw">
+                  Name <span className="text-[#FF0000]">*</span>
                 </label>
                 <input
                   id="contact-name"
@@ -299,17 +152,17 @@ const ContactSection = () => {
                   onBlur={() => handleBlur("name")}
                   aria-describedby={errors.name ? "contact-name-error" : undefined}
                   aria-invalid={!!errors.name}
-                  className={`w-full bg-transparent border-b ${getFieldBorderClass("name")} pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500`}
+                  className={getInputClass("name")}
                 />
                 {errors.name && (
-                  <p id="contact-name-error" role="alert" className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
+                  <p id="contact-name-error" role="alert" className="helper-text error">
                     {errors.name}
                   </p>
                 )}
               </div>
-              <div className="contact-form-field">
-                <label htmlFor="contact-email" className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
-                  Email <span className="text-white/20">*</span>
+              <div>
+                <label htmlFor="contact-email" className="label-raw">
+                  Email <span className="text-[#FF0000]">*</span>
                 </label>
                 <input
                   id="contact-email"
@@ -323,23 +176,24 @@ const ContactSection = () => {
                   onBlur={() => handleBlur("email")}
                   aria-describedby={errors.email ? "contact-email-error" : undefined}
                   aria-invalid={!!errors.email}
-                  className={`w-full bg-transparent border-b ${getFieldBorderClass("email")} pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500`}
+                  className={getInputClass("email")}
                 />
                 {errors.email && (
-                  <p id="contact-email-error" role="alert" className="text-red-400/70 text-xs mt-3 font-light tracking-wide">
+                  <p id="contact-email-error" role="alert" className="helper-text error">
                     {errors.email}
                   </p>
                 )}
               </div>
             </div>
-            <div className="contact-form-field">
-              <label htmlFor="contact-message" className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-4">
-                Message <span className="text-white/20">*</span>
+
+            <div>
+              <label htmlFor="contact-message" className="label-raw">
+                Message <span className="text-[#FF0000]">*</span>
               </label>
               <textarea
                 id="contact-message"
                 placeholder="Tell me about your project..."
-                rows={5}
+                rows={6}
                 autoComplete="off"
                 required
                 value={formData.message}
@@ -348,42 +202,34 @@ const ContactSection = () => {
                 onBlur={() => handleBlur("message")}
                 aria-describedby={errors.message ? "contact-message-error" : "contact-message-count"}
                 aria-invalid={!!errors.message}
-                className={`w-full bg-transparent border-b ${getFieldBorderClass("message")} pb-3 text-white/90 text-base font-light placeholder:text-white/20 focus:outline-none transition-colors duration-500 resize-none`}
+                className={getInputClass("message")}
               />
-              <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center justify-between mt-1">
                 {errors.message ? (
-                  <p id="contact-message-error" role="alert" className="text-red-400/70 text-xs font-light tracking-wide">
+                  <p id="contact-message-error" role="alert" className="helper-text error">
                     {errors.message}
                   </p>
-                ) : (
-                  <span />
-                )}
-                <span id="contact-message-count" className="text-[10px] tracking-[0.2em] text-white/20 font-mono">
+                ) : <span />}
+                <span id="contact-message-count" className="font-mono-rb text-xs text-black/40">
                   {formData.message.length}/1000
                 </span>
               </div>
             </div>
-            <div className="contact-form-field pt-4">
+
+            <div>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="group relative inline-flex items-center gap-4 text-white/80 text-xs tracking-[0.3em] uppercase hover:text-white transition-all duration-500 disabled:opacity-40 py-4 pr-2 border-b border-white/20 hover:border-violet-400/30 overflow-hidden"
+                className="btn-primary"
               >
-                {/* Shimmer on hover */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                <span className="relative z-10 flex items-center gap-4">
-                  {isSubmitting ? (
-                    <>
-                      <span className="inline-block w-4 h-4 border border-white/40 border-t-white rounded-full animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      Send Message
-                      <Send className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" />
-                    </>
-                  )}
-                </span>
+                {isSubmitting ? (
+                  <>
+                    <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  "Send Message"
+                )}
               </button>
             </div>
           </form>

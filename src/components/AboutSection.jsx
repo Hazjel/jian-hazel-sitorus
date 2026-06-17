@@ -1,218 +1,83 @@
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Download } from "lucide-react";
 import profilePhoto from "@/assets/profile-photo.jpeg";
 
-gsap.registerPlugin(ScrollTrigger);
+const info = [
+  { label: "Education", value: "Telkom University" },
+  { label: "Major", value: "Informatics" },
+  { label: "Location", value: "Bandung, ID" },
+  { label: "Year", value: "2023 — Present" },
+];
 
 const AboutSection = () => {
-  const sectionRef = useRef(null);
-  const imageContainerRef = useRef(null);
-  const imageRef = useRef(null);
-
-  const info = [
-    { label: "Education", value: "Telkom University" },
-    { label: "Major", value: "Informatics" },
-    { label: "Location", value: "Bandung, ID" },
-    { label: "Year", value: "2023 — Present" },
-  ];
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const ctx = gsap.context(() => {
-      if (prefersReduced) {
-        gsap.set([".about-title-line", ".about-text", ".about-info-item"], { opacity: 1, y: 0 });
-        gsap.set(imageContainerRef.current, { clipPath: "inset(0% 0% 0% 0%)" });
-        return;
-      }
-
-      // Section title reveal
-      gsap.fromTo(
-        ".about-title-line",
-        { y: 80, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-
-      // Text paragraphs fade in
-      gsap.fromTo(
-        ".about-text",
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power3.out",
-          stagger: 0.15,
-          scrollTrigger: {
-            trigger: ".about-text-container",
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-
-      // Image expansion on scroll
-      gsap.fromTo(
-        imageContainerRef.current,
-        { clipPath: "inset(15% 15% 15% 15%)" },
-        {
-          clipPath: "inset(0% 0% 0% 0%)",
-          ease: "none",
-          scrollTrigger: {
-            trigger: imageContainerRef.current,
-            start: "top 85%",
-            end: "top 30%",
-            scrub: 1,
-          },
-        }
-      );
-
-      // Image parallax
-      gsap.to(imageRef.current, {
-        yPercent: -12,
-        scrollTrigger: {
-          trigger: imageContainerRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.5,
-        },
-      });
-
-      // Info items stagger
-      gsap.fromTo(
-        ".about-info-item",
-        { y: 20, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.08,
-          scrollTrigger: {
-            trigger: ".about-info-grid",
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="scroll-mt-20 relative py-32 md:py-40 lg:py-48 bg-[#0a0a0a]"
-    >
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
-        {/* Section Header */}
-        <div className="mb-20 md:mb-28 lg:mb-32">
-          <div className="flex items-center gap-4 mb-6 overflow-hidden">
-            <span className="about-title-line text-white/20 text-xs tracking-[0.4em] font-mono">
-              01
-            </span>
-            <span className="about-title-line w-12 h-px bg-white/20" />
-            <span className="about-title-line text-white/40 text-[11px] tracking-[0.4em] uppercase">
-              About
-            </span>
-          </div>
-          <div className="overflow-hidden">
-            <h2 className="about-title-line font-display text-[clamp(2rem,5.5vw,5rem)] leading-[1.05] tracking-[-0.03em] text-white font-light max-w-5xl">
-              An informatics student with a deep passion for building
-              <span className="italic text-white/50"> meaningful </span>
-              digital experiences.
-            </h2>
+    <section id="about" className="scroll-mt-16 bg-white border-b-[3px] border-black">
+      {/* Section header */}
+      <div className="border-b-[3px] border-black">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <div className="flex items-center gap-4 py-4">
+            <span className="section-label">01</span>
+            <div className="w-8 border-t-[3px] border-black/30" />
+            <span className="section-label">About</span>
           </div>
         </div>
+      </div>
 
-        {/* Image + Content Grid */}
-        <div className="grid lg:grid-cols-12 gap-10 md:gap-16 lg:gap-20 items-start">
-          {/* Expanding Image */}
-          <div className="lg:col-span-5">
-            <div
-              ref={imageContainerRef}
-              className="relative aspect-[4/5] overflow-hidden group"
-            >
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-16 md:py-24">
+        {/* Headline */}
+        <h2 className="font-display text-black mb-12 max-w-4xl">
+          An Informatics Student With a Deep Passion for Building Meaningful Digital Experiences.
+        </h2>
+
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          {/* Photo */}
+          <div className="lg:col-span-4">
+            <div className="border-[5px] border-black overflow-hidden aspect-[4/5]">
               <img
-                ref={imageRef}
                 src={profilePhoto}
                 alt="Jian Hazel Sitorus"
-                width={800}
-                height={1000}
-                className="absolute inset-0 w-full h-[120%] object-cover object-[center_20%] grayscale hover:grayscale-0 transition-[filter] duration-[1500ms]"
+                className="w-full h-full object-cover object-[center_20%] grayscale hover:grayscale-0 transition-[filter] duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/50 via-transparent to-transparent" />
-
-              {/* Hover accent overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1a0a2e]/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-
-              {/* Corner accents */}
-              <div className="absolute top-0 left-0 w-8 h-px bg-white/20" />
-              <div className="absolute top-0 left-0 w-px h-8 bg-white/20" />
-              <div className="absolute bottom-0 right-0 w-8 h-px bg-white/20" />
-              <div className="absolute bottom-0 right-0 w-px h-8 bg-white/20" />
             </div>
-            {/* Image caption */}
-            <div className="mt-4 flex items-center justify-between text-[10px] tracking-[0.3em] uppercase text-white/30">
-              <span>Portrait</span>
-              <span>— 2026</span>
+            <div className="border-[3px] border-black border-t-0 px-4 py-2 flex items-center justify-between">
+              <span className="section-label">Portrait</span>
+              <span className="section-label">2026</span>
             </div>
           </div>
 
-          {/* Text Content */}
-          <div className="about-text-container lg:col-span-7 flex flex-col justify-start space-y-10 lg:pt-6">
-            <p className="about-text text-white/80 text-xl md:text-2xl leading-[1.5] font-light tracking-[-0.01em]">
-              I&apos;m an Informatics student with a strong passion for
-              software development and AI. Always enthusiastic about learning
-              new things and working on challenging projects.
+          {/* Content */}
+          <div className="lg:col-span-8 space-y-8">
+            <p className="text-xl md:text-2xl text-black leading-relaxed">
+              I'm an Informatics student with a strong passion for software development and AI.
+              Always enthusiastic about learning new things and working on challenging projects.
             </p>
-            <p className="about-text text-white/40 text-base md:text-lg leading-[1.7] font-light max-w-2xl">
-              In my free time, I enjoy exploring the latest technologies,
-              contributing to open source, and sharing knowledge with the
-              developer community.
+            <p className="text-base text-black/60 leading-relaxed max-w-2xl">
+              In my free time, I enjoy exploring the latest technologies, contributing to open
+              source, and sharing knowledge with the developer community.
             </p>
 
-            {/* Info Grid */}
-            <div className="about-info-grid pt-12 mt-4 border-t border-white/10">
-              <div className="grid grid-cols-2 gap-x-8 gap-y-10">
-                {info.map((item) => (
-                  <div key={item.label} className="about-info-item group">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 block mb-3 group-hover:text-white/50 transition-colors duration-500">
-                      {item.label}
-                    </span>
-                    <p className="text-white/85 text-sm md:text-base font-light tracking-[-0.01em]">
-                      {item.value}
-                    </p>
+            {/* Info grid */}
+            <div className="border-t-[3px] border-black pt-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
+                {info.map((item, i) => (
+                  <div
+                    key={item.label}
+                    className={`py-6 pr-6 ${i < info.length - 1 ? "border-r-[3px] border-black pl-6 first:pl-0" : "pl-6"}`}
+                  >
+                    <p className="label-raw text-xs mb-2 text-black/50">{item.label}</p>
+                    <p className="font-body text-sm font-semibold text-black">{item.value}</p>
                   </div>
                 ))}
               </div>
+            </div>
 
-              {/* CV Download */}
-              <div className="about-info-item mt-10 pt-10 border-t border-white/5">
-                <a
-                  href="/CV_Jian Hazel Sitorus.pdf"
-                  download="Jian-Hazel-Sitorus-CV.pdf"
-                  className="group inline-flex items-center gap-4 text-white/60 text-xs tracking-[0.3em] uppercase hover:text-white transition-all duration-500 py-4 border-b border-white/15 hover:border-white/50"
-                >
-                  Download CV
-                  <Download className="w-4 h-4 transition-transform duration-500 group-hover:translate-y-0.5" />
-                </a>
-              </div>
+            {/* CV download */}
+            <div className="border-t-[3px] border-black pt-8">
+              <a
+                href="/CV_Jian Hazel Sitorus.pdf"
+                download="Jian-Hazel-Sitorus-CV.pdf"
+                className="btn-secondary inline-flex"
+              >
+                Download CV
+              </a>
             </div>
           </div>
         </div>

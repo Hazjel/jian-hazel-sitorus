@@ -1,397 +1,140 @@
-import { useEffect, useRef, useCallback, useMemo } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
 
-gsap.registerPlugin(ScrollTrigger);
+const phrases = ["Software Enthusiast", "AI & Data Science Enthusiast", "Problem Solver"];
 
 const HeroSection = () => {
-  const sectionRef = useRef(null);
-  const headingRef = useRef(null);
-  const subRef = useRef(null);
-  const overlayRef = useRef(null);
-  const scrollIndicatorRef = useRef(null);
-  const auroraRef = useRef(null);
   const typedTextRef = useRef(null);
-  const typedCursorRef = useRef(null);
-  const heroCTARef = useRef(null);
-
-  // Parallax mouse movement for aurora orbs
-  const handleMouseMove = useCallback((e) => {
-    if (!auroraRef.current) return;
-    const { clientX, clientY } = e;
-    const x = (clientX / window.innerWidth - 0.5) * 30;
-    const y = (clientY / window.innerHeight - 0.5) * 30;
-
-    const orbs = auroraRef.current.querySelectorAll(".aurora-orb");
-    orbs.forEach((orb, i) => {
-      const depth = (i + 1) * 0.4;
-      gsap.to(orb, {
-        x: x * depth,
-        y: y * depth,
-        duration: 1.2,
-        ease: "power2.out",
-      });
-    });
-  }, []);
 
   useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
-    const section = sectionRef.current;
-    section.addEventListener("mousemove", handleMouseMove);
-    return () => section.removeEventListener("mousemove", handleMouseMove);
-  }, [handleMouseMove]);
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const ctx = gsap.context(() => {
-      if (prefersReduced) {
-        gsap.set(overlayRef.current, { scaleY: 0 });
-        gsap.set(".hero-gradient-bg", { opacity: 1 });
-        gsap.set(".hero-char", { y: 0, opacity: 1, rotateX: 0 });
-        gsap.set(".hero-char-last", { y: 0, opacity: 1, rotateX: 0 });
-        gsap.set(subRef.current, { y: 0, opacity: 1 });
-        gsap.set([".hero-top-marker", ".hero-side-label"], { opacity: 1, y: 0 });
-        gsap.set(".hero-particle", { opacity: 1 });
-        gsap.set(".aurora-orb", { scale: 1, opacity: 1 });
-        gsap.set(scrollIndicatorRef.current, { opacity: 1 });
-        gsap.set(heroCTARef.current, { opacity: 1, y: 0 });
-        return;
-      }
-
-      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-
-      // Reveal overlay wipe
-      tl.fromTo(
-        overlayRef.current,
-        { scaleY: 1 },
-        { scaleY: 0, duration: 1.8, transformOrigin: "top" }
-      )
-        .fromTo(
-          ".hero-gradient-bg",
-          { opacity: 0 },
-          { opacity: 1, duration: 2 },
-          "-=1.4"
-        )
-        // Character-level stagger for name
-        .fromTo(
-          ".hero-char",
-          { y: 120, opacity: 0, rotateX: -80 },
-          {
-            y: 0,
-            opacity: 1,
-            rotateX: 0,
-            duration: 1.4,
-            stagger: 0.03,
-            ease: "power4.out",
-          },
-          "-=1.4"
-        )
-        .fromTo(
-          ".hero-char-last",
-          { y: 120, opacity: 0, rotateX: -80 },
-          {
-            y: 0,
-            opacity: 1,
-            rotateX: 0,
-            duration: 1.4,
-            stagger: 0.03,
-            ease: "power4.out",
-          },
-          "-=1.1"
-        )
-        .fromTo(
-          subRef.current,
-          { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1.2 },
-          "-=0.8"
-        )
-        .fromTo(
-          [".hero-top-marker", ".hero-side-label"],
-          { opacity: 0, y: 10 },
-          { opacity: 1, y: 0, duration: 1.2, stagger: 0.1 },
-          "-=0.8"
-        )
-        .fromTo(
-          ".hero-particle",
-          { opacity: 0 },
-          { opacity: 1, duration: 2, stagger: 0.05 },
-          "-=1"
-        )
-        .fromTo(
-          ".aurora-orb",
-          { scale: 0.5, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 2, stagger: 0.2, ease: "power2.out" },
-          "-=2"
-        )
-        .fromTo(
-          scrollIndicatorRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 1 },
-          "-=0.4"
-        )
-        .fromTo(
-          heroCTARef.current,
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: 1, ease: "power3.out" },
-          "-=0.6"
-        );
-
-      if (!prefersReduced) {
-        gsap.to(headingRef.current, {
-          yPercent: -30,
-          opacity: 0.2,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: "80% top",
-            scrub: 1,
-          },
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  // Typing animation for subtitle
-  useEffect(() => {
-    const phrases = [
-      "Software Enthusiast",
-      "AI & Data Science Enthusiast",
-      "Problem Solver",
-    ];
-
     let phraseIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
     let timeout;
 
-    const typedEl = typedTextRef.current;
-    const cursorEl = typedCursorRef.current;
-
-    if (!typedEl || !cursorEl) return;
+    const el = typedTextRef.current;
+    if (!el) return;
 
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) {
-      typedEl.textContent = phrases[0];
-      cursorEl.style.display = "none";
+      el.textContent = phrases[0];
       return;
     }
 
-    gsap.to(cursorEl, {
-      opacity: 0,
-      repeat: -1,
-      yoyo: true,
-      duration: 0.6,
-      ease: "steps(1)",
-    });
-
     const type = () => {
-      const currentPhrase = phrases[phraseIndex];
-
+      const current = phrases[phraseIndex];
       if (!isDeleting) {
         charIndex++;
-        typedEl.textContent = currentPhrase.slice(0, charIndex);
-
-        if (charIndex === currentPhrase.length) {
+        el.textContent = current.slice(0, charIndex);
+        if (charIndex === current.length) {
           isDeleting = true;
-          timeout = setTimeout(type, 2500);
+          timeout = setTimeout(type, 2400);
           return;
         }
         timeout = setTimeout(type, 80 + Math.random() * 40);
       } else {
         charIndex--;
-        typedEl.textContent = currentPhrase.slice(0, charIndex);
-
+        el.textContent = current.slice(0, charIndex);
         if (charIndex === 0) {
           isDeleting = false;
           phraseIndex = (phraseIndex + 1) % phrases.length;
-          timeout = setTimeout(type, 500);
+          timeout = setTimeout(type, 400);
           return;
         }
         timeout = setTimeout(type, 40 + Math.random() * 20);
       }
     };
 
-    const startDelay = setTimeout(() => {
-      type();
-    }, 3200);
-
-    return () => {
-      clearTimeout(timeout);
-      clearTimeout(startDelay);
-    };
+    const start = setTimeout(type, 800);
+    return () => { clearTimeout(timeout); clearTimeout(start); };
   }, []);
-
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 30 }, (_, i) => ({
-        left: `${8 + Math.random() * 84}%`,
-        top: `${5 + Math.random() * 90}%`,
-        animationDelay: `${Math.random() * 8}s`,
-        animationDuration: `${8 + Math.random() * 12}s`,
-        width: `${1 + Math.random() * 2}px`,
-        height: `${1 + Math.random() * 2}px`,
-        background:
-          i % 5 === 0
-            ? "rgba(255, 255, 255, 0.25)"
-            : i % 7 === 0
-            ? "rgba(255, 255, 255, 0.15)"
-            : "rgba(255, 255, 255, 0.2)",
-      })),
-    []
-  );
-
-  // Split text into characters for stagger animation
-  const splitText = (text, className = "hero-char") =>
-    text.split("").map((char, i) => (
-      <span
-        key={i}
-        className={`${className} inline-block`}
-        style={{
-          transformStyle: "preserve-3d",
-          display: char === " " ? "inline" : "inline-block",
-        }}
-      >
-        {char === " " ? "\u00A0" : char}
-      </span>
-    ));
 
   return (
     <section
       id="home"
-      ref={sectionRef}
-      className="hero-section scroll-mt-20 relative h-[100dvh] w-full overflow-hidden flex items-center justify-center"
+      className="scroll-mt-16 min-h-[100dvh] bg-white flex flex-col border-b-[3px] border-black"
     >
-      {/* Animated Gradient Background */}
-      <div className="hero-gradient-bg absolute inset-0 z-0 opacity-0">
-        <div className="absolute inset-0 hero-gradient-animate" />
-
-        {/* Aurora Orbs with mouse-reactive parallax */}
-        <div ref={auroraRef} className="absolute inset-0">
-          <div className="aurora-orb absolute top-[15%] left-[20%] w-[45vw] h-[45vw] rounded-full bg-[#1a1040]/50 blur-[120px] animate-aurora-orb" />
-          <div className="aurora-orb absolute bottom-[10%] right-[15%] w-[35vw] h-[35vw] rounded-full bg-[#0c1a2e]/60 blur-[100px] animate-aurora-orb-reverse" />
-          <div className="aurora-orb absolute top-[40%] left-[55%] w-[25vw] h-[25vw] rounded-full bg-[#1c0a28]/40 blur-[80px] animate-float-slow" />
-          {/* Subtle violet accent orb */}
-          <div className="aurora-orb absolute top-[60%] left-[30%] w-[20vw] h-[20vw] rounded-full bg-[#2d1b4e]/20 blur-[100px] animate-float-slow-reverse" />
-        </div>
-      </div>
-
-      {/* Floating Particles — more particles for depth */}
-      <div className="absolute inset-0 z-[5] overflow-hidden pointer-events-none">
-        {particles.map((style, i) => (
-          <div
-            key={i}
-            className="hero-particle absolute rounded-full animate-particle-float"
-            style={style}
-          />
-        ))}
-      </div>
-
-      {/* Reveal Overlay */}
-      <div
-        ref={overlayRef}
-        className="absolute inset-0 z-10 bg-[#0a0a0a]"
-        style={{ transformOrigin: "top" }}
-      />
-
-      {/* Grain Texture Overlay */}
-      <div className="absolute inset-0 z-20 opacity-[0.04] pointer-events-none grain-texture" />
-
-      {/* Side Labels */}
-      <div className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 z-30 hidden md:flex flex-col items-center gap-6 opacity-0 hero-side-label">
-        <span className="text-white/30 text-[10px] tracking-[0.5em] uppercase writing-mode-vertical">
-          Portfolio &mdash; 2026
-        </span>
-      </div>
-
-      <div className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 z-30 hidden md:flex flex-col items-center gap-6 opacity-0 hero-side-label">
-        <span className="text-white/30 text-[10px] tracking-[0.5em] uppercase writing-mode-vertical">
-          Bandung &mdash; Indonesia
-        </span>
-      </div>
-
-      {/* Top Marker */}
-      <div className="absolute top-28 md:top-32 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4 opacity-0 hero-top-marker">
-        <span className="w-8 h-px bg-white/30" />
-        <span className="text-white/40 text-[10px] tracking-[0.5em] uppercase">
-          Est. 2023
-        </span>
-        <span className="w-8 h-px bg-white/30" />
-      </div>
-
-      {/* Content */}
-      <div ref={headingRef} className="relative z-30 text-center px-6 max-w-[90rem]">
-        <div className="py-3 mb-1 md:mb-3" style={{ perspective: "1000px" }}>
-          <h1 className="font-display text-[clamp(3rem,11vw,9rem)] leading-[1.1] tracking-[-0.03em] text-white font-light">
-            {splitText("Jian Hazel")}
-          </h1>
-        </div>
-        <div className="py-3" style={{ perspective: "1000px" }}>
-          <h1 className="font-display text-[clamp(3rem,11vw,9rem)] leading-[1.1] tracking-[-0.03em] text-white/50 font-light italic">
-            {splitText("Sitorus", "hero-char-last")}
-          </h1>
-        </div>
-
-        <div ref={subRef} className="mt-10 md:mt-14 flex flex-col items-center gap-3">
-          <div className="flex items-center gap-4">
-            <span className="w-10 h-px bg-gradient-to-r from-transparent to-white/30" />
-            <p className="text-white/60 text-[11px] md:text-xs tracking-[0.4em] uppercase font-light">
-              <span ref={typedTextRef} className="hero-typed-text inline-block min-w-[12ch] text-center" />
-              <span ref={typedCursorRef} className="hero-typed-cursor inline-block w-px h-[1em] bg-white/60 ml-1 align-middle" />
-            </p>
-            <span className="w-10 h-px bg-gradient-to-l from-transparent to-white/30" />
+      {/* Top bar */}
+      <div className="border-b-[3px] border-black mt-16">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <div className="flex items-center justify-between py-3">
+            <span className="section-label">Portfolio — 2026</span>
+            <span className="section-label">Est. 2023</span>
+            <span className="section-label">Bandung, Indonesia</span>
           </div>
-          <p className="text-white/30 text-[10px] md:text-[11px] tracking-[0.3em] uppercase font-light">
-            Informatics &mdash; Telkom University
-          </p>
-        </div>
-
-        {/* Hero CTA */}
-        <div
-          ref={heroCTARef}
-          className="mt-12 md:mt-16 flex items-center gap-6 justify-center opacity-0"
-        >
-          <a
-            href="#projects"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="text-white/60 text-[11px] tracking-[0.3em] uppercase hover:text-white hover:border-violet-400/30 transition-colors duration-500 border-b border-white/20 pb-1"
-          >
-            View Work
-          </a>
-          <span className="w-1 h-1 rounded-full bg-white/20" />
-          <a
-            href="#contact"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="text-white/60 text-[11px] tracking-[0.3em] uppercase hover:text-white hover:border-violet-400/30 transition-colors duration-500 border-b border-white/20 pb-1"
-          >
-            Contact
-          </a>
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div
-        ref={scrollIndicatorRef}
-        className="absolute bottom-10 md:bottom-14 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3"
-      >
-        <span className="text-white/40 text-[10px] tracking-[0.4em] uppercase">
-          Scroll
-        </span>
-        <div className="w-px h-12 bg-gradient-to-b from-white/40 to-transparent scroll-line" />
+      {/* Main content */}
+      <div className="flex-1 flex flex-col justify-center max-w-7xl mx-auto px-6 md:px-10 w-full py-16">
+        {/* Name — massive Archivo Black */}
+        <div className="mb-8">
+          <h1
+            className="font-display text-black leading-none"
+            style={{ fontSize: "clamp(3rem, 12vw, 9rem)" }}
+          >
+            JIAN HAZEL
+          </h1>
+          <h1
+            className="font-display text-black leading-none"
+            style={{ fontSize: "clamp(3rem, 12vw, 9rem)" }}
+          >
+            SITORUS
+          </h1>
+        </div>
+
+        {/* Thick rule */}
+        <div className="border-t-[5px] border-black mb-8 w-full" />
+
+        {/* Subtitle row */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span
+                ref={typedTextRef}
+                className="font-mono-rb text-base md:text-lg text-black"
+              />
+              <span className="typed-cursor" />
+            </div>
+            <p className="text-sm text-black/60 font-body uppercase tracking-widest">
+              Informatics · Telkom University
+            </p>
+          </div>
+
+          {/* CTAs */}
+          <div className="flex items-center gap-4">
+            <a
+              href="#projects"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="btn-primary"
+            >
+              View Work
+            </a>
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="btn-secondary"
+            >
+              Contact
+            </a>
+          </div>
+        </div>
       </div>
 
-      {/* Vignette */}
-      <div className="absolute inset-0 z-20 pointer-events-none vignette" />
+      {/* Bottom bar */}
+      <div className="border-t-[3px] border-black">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <div className="flex items-center justify-between py-3">
+            <span className="section-label">Scroll to explore</span>
+            <span className="section-label font-mono-rb">↓</span>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
