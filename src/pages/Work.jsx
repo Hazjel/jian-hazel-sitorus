@@ -1,20 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowLeft, Search, X } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ProjectCard from "@/components/ProjectCard";
-
-gsap.registerPlugin(ScrollTrigger);
+import Navbar from "@/components/Navbar";
 
 const PROJECTS_PER_PAGE = 9;
 
 const Work = () => {
-  const containerRef = useRef(null);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState("all");
   const [activeYear, setActiveYear] = useState("all");
@@ -27,58 +22,17 @@ const Work = () => {
           .from("projects")
           .select("*")
           .order("created_at", { ascending: false });
-
         if (error) throw error;
         setProjects(data || []);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
+      } catch (err) {
+        console.error("Error fetching projects:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProjects();
   }, []);
 
-  useEffect(() => {
-    if (loading) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".work-hero",
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: "power3.out",
-          stagger: 0.1,
-        }
-      );
-
-      gsap.fromTo(
-        ".work-filter",
-        { y: 20, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.08,
-          delay: 0.4,
-        }
-      );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [loading]);
-
-  // Refresh ScrollTrigger when filtered list changes so cards animate
-  useEffect(() => {
-    ScrollTrigger.refresh();
-  }, [query, activeTag, activeYear, visibleCount]);
-
-  // Derive all unique tags and years
   const { allTags, allYears } = useMemo(() => {
     const tags = new Set();
     const years = new Set();
@@ -89,33 +43,17 @@ const Work = () => {
         : new Date(p.created_at).getFullYear();
       years.add(year);
     });
-    return {
-      allTags: Array.from(tags).sort(),
-      allYears: Array.from(years).sort((a, b) => b - a),
-    };
+    return { allTags: Array.from(tags).sort(), allYears: Array.from(years).sort((a, b) => b - a) };
   }, [projects]);
 
-  // Filter + search
   const filteredProjects = useMemo(() => {
     return projects.filter((p) => {
-      // Search
       if (query) {
         const q = query.toLowerCase();
-        const haystack = [
-          p.title,
-          p.description,
-          ...(p.tags || []),
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-        if (!haystack.includes(q)) return false;
+        const hay = [p.title, p.description, ...(p.tags || [])].filter(Boolean).join(" ").toLowerCase();
+        if (!hay.includes(q)) return false;
       }
-      // Tag filter
-      if (activeTag !== "all") {
-        if (!p.tags || !p.tags.includes(activeTag)) return false;
-      }
-      // Year filter
+      if (activeTag !== "all" && (!p.tags || !p.tags.includes(activeTag))) return false;
       if (activeYear !== "all") {
         const year = p.project_date
           ? new Date(p.project_date).getFullYear()
@@ -128,247 +66,187 @@ const Work = () => {
 
   const visibleProjects = filteredProjects.slice(0, visibleCount);
   const hasMore = visibleCount < filteredProjects.length;
+  const hasActiveFilter = query !== "" || activeTag !== "all" || activeYear !== "all";
 
-  const clearFilters = () => {
-    setQuery("");
-    setActiveTag("all");
-    setActiveYear("all");
-    setVisibleCount(PROJECTS_PER_PAGE);
-  };
-
-  const hasActiveFilter =
-    query !== "" || activeTag !== "all" || activeYear !== "all";
-
-  const handleFilterChange = (fn) => {
-    setVisibleCount(PROJECTS_PER_PAGE);
-    fn();
-  };
+  const handleFilterChange = (fn) => { setVisibleCount(PROJECTS_PER_PAGE); fn(); };
+  const clearFilters = () => { setQuery(""); setActiveTag("all"); setActiveYear("all"); setVisibleCount(PROJECTS_PER_PAGE); };
 
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen bg-[#0a0a0a] text-white cinematic-portfolio"
-    >
-      {/* Grain overlay */}
-      <div className="fixed inset-0 opacity-[0.03] pointer-events-none grain-texture z-[1]" />
+    <div className="min-h-screen bg-white">
+      <Navbar />
 
-      {/* Back Nav */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 pt-12 md:pt-16">
-        <Link
-          to="/"
-          className="work-hero inline-flex items-center gap-3 text-white/50 text-[11px] tracking-[0.3em] uppercase hover:text-white transition-colors duration-500 group"
-        >
-          <ArrowLeft className="w-4 h-4 transition-transform duration-500 group-hover:-translate-x-2" />
-          Back to Home
-        </Link>
+      {/* Back nav + header */}
+      <div className="pt-16 border-b-[3px] border-black">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <div className="flex items-center justify-between py-4">
+            <Link to="/" className="inline-flex items-center gap-2 btn-ghost text-sm">
+              <ArrowLeft size={14} />
+              Back to Home
+            </Link>
+            <span className="section-label">Archive</span>
+          </div>
+        </div>
       </div>
 
       {/* Hero */}
-      <section className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 pt-16 md:pt-24 pb-16">
-        <div className="flex items-center gap-4 mb-6 work-hero">
-          <span className="text-white/20 text-xs tracking-[0.4em] font-mono">
-            Archive
-          </span>
-          <span className="w-12 h-px bg-white/20" />
-          <span className="text-white/40 text-[11px] tracking-[0.4em] uppercase">
-            All Works
-          </span>
+      <section className="border-b-[3px] border-black">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-16">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="font-mono-rb text-xs text-black/40">All Works</span>
+          </div>
+          <h1 className="font-display text-black mb-6" style={{ fontSize: "clamp(2rem, 7vw, 5rem)", lineHeight: 1.0 }}>
+            Every Project, Every Experiment.
+          </h1>
+          <p className="text-black/60 text-base max-w-2xl leading-relaxed">
+            A complete index of everything I've built. Browse by tag, filter by year, or search for something specific.
+          </p>
         </div>
-
-        <h1 className="work-hero font-display text-[clamp(2.5rem,7vw,6rem)] leading-[1] tracking-[-0.03em] text-white font-light max-w-5xl">
-          Every project,
-          <span className="italic text-white/50"> every experiment.</span>
-        </h1>
-
-        <p className="work-hero text-white/50 text-base md:text-lg font-light leading-[1.7] mt-8 max-w-2xl">
-          A complete index of everything I&apos;ve built. Browse by tag, filter
-          by year, or search for something specific.
-        </p>
       </section>
 
       {/* Filters */}
-      <section className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 pb-12 md:pb-16">
-        <div className="work-filter border-t border-b border-white/10 py-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <section className="border-b-[3px] border-black">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
           {/* Search */}
-          <div className="relative flex items-center gap-3 lg:min-w-[280px] lg:max-w-sm flex-1">
-            <Search className="w-4 h-4 text-white/30 shrink-0" />
+          <div className="flex items-center gap-3 border-b-[3px] border-black py-4">
+            <span className="label-raw text-xs text-black/40 shrink-0">Search</span>
+            <div className="w-px h-5 bg-black/20" />
             <input
               type="text"
               value={query}
-              onChange={(e) =>
-                handleFilterChange(() => setQuery(e.target.value))
-              }
+              onChange={(e) => handleFilterChange(() => setQuery(e.target.value))}
               placeholder="Search projects..."
-              className="w-full bg-transparent text-white/80 text-sm font-light placeholder:text-white/20 focus:outline-none tracking-[0.02em]"
+              className="flex-1 bg-transparent text-black text-sm placeholder:text-black/30 focus:outline-none font-body"
             />
             {query && (
               <button
                 onClick={() => handleFilterChange(() => setQuery(""))}
-                className="text-white/30 hover:text-white transition-colors duration-500"
+                className="border-[2px] border-black p-1 hover:bg-black hover:text-white transition-colors duration-100"
                 aria-label="Clear search"
               >
-                <X className="w-4 h-4" />
+                <X size={12} />
               </button>
             )}
           </div>
 
-          {/* Year Filter */}
+          {/* Year filter */}
           {allYears.length > 0 && (
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-[10px] tracking-[0.3em] uppercase text-white/30">
+            <div className="flex items-center gap-0 border-b-[3px] border-black">
+              <span className="label-raw text-xs text-black/40 px-0 py-4 pr-4 border-r-[3px] border-black shrink-0">
                 Year
               </span>
-              <button
-                onClick={() => handleFilterChange(() => setActiveYear("all"))}
-                className={`text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 border transition-all duration-500 ${
-                  activeYear === "all"
-                    ? "border-white/60 text-white"
-                    : "border-white/10 text-white/40 hover:border-white/30 hover:text-white/70"
-                }`}
-              >
-                All
-              </button>
-              {allYears.map((year) => (
+              <div className="flex flex-wrap gap-0">
                 <button
-                  key={year}
-                  onClick={() =>
-                    handleFilterChange(() => setActiveYear(String(year)))
-                  }
-                  className={`text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 border transition-all duration-500 ${
-                    activeYear === String(year)
-                      ? "border-white/60 text-white"
-                      : "border-white/10 text-white/40 hover:border-white/30 hover:text-white/70"
-                  }`}
+                  onClick={() => handleFilterChange(() => setActiveYear("all"))}
+                  className={`chip-filter border-0 border-l-[3px] border-black rounded-none ${activeYear === "all" ? "active" : ""}`}
                 >
-                  {year}
+                  All
                 </button>
-              ))}
+                {allYears.map((year) => (
+                  <button
+                    key={year}
+                    onClick={() => handleFilterChange(() => setActiveYear(String(year)))}
+                    className={`chip-filter border-0 border-l-[3px] border-black rounded-none ${activeYear === String(year) ? "active" : ""}`}
+                  >
+                    {year}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
-        </div>
 
-        {/* Tags Filter */}
-        {allTags.length > 0 && (
-          <div className="work-filter pt-6 pb-2 flex items-start gap-4 flex-wrap">
-            <span className="text-[10px] tracking-[0.3em] uppercase text-white/30 shrink-0 mt-2">
-              Tags
+          {/* Tags filter */}
+          {allTags.length > 0 && (
+            <div className="flex items-start gap-0 border-b-[3px] border-black">
+              <span className="label-raw text-xs text-black/40 px-0 py-4 pr-4 border-r-[3px] border-black shrink-0">
+                Tags
+              </span>
+              <div className="flex flex-wrap gap-0">
+                <button
+                  onClick={() => handleFilterChange(() => setActiveTag("all"))}
+                  className={`chip-filter border-0 border-l-[3px] border-black rounded-none ${activeTag === "all" ? "active" : ""}`}
+                >
+                  All
+                </button>
+                {allTags.map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => handleFilterChange(() => setActiveTag(tag))}
+                    className={`chip-filter border-0 border-l-[3px] border-black rounded-none ${activeTag === tag ? "active" : ""}`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Result count */}
+          <div className="flex items-center justify-between py-4">
+            <span className="font-mono-rb text-xs text-black/50 uppercase tracking-widest">
+              {filteredProjects.length === 0
+                ? "No results"
+                : `${String(filteredProjects.length).padStart(2, "0")} ${filteredProjects.length === 1 ? "Result" : "Results"}`}
             </span>
-            <div className="flex items-center gap-2 flex-wrap">
+            {hasActiveFilter && (
               <button
-                onClick={() => handleFilterChange(() => setActiveTag("all"))}
-                className={`text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 border transition-all duration-500 ${
-                  activeTag === "all"
-                    ? "border-white/60 text-white"
-                    : "border-white/10 text-white/40 hover:border-white/30 hover:text-white/70"
-                }`}
+                onClick={clearFilters}
+                className="inline-flex items-center gap-2 font-mono-rb text-xs text-black/50 hover:text-black uppercase tracking-widest transition-colors duration-100"
               >
-                All
+                Clear filters <X size={10} />
               </button>
-              {allTags.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => handleFilterChange(() => setActiveTag(tag))}
-                  className={`text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 border transition-all duration-500 ${
-                    activeTag === tag
-                      ? "border-white/60 text-white"
-                      : "border-white/10 text-white/40 hover:border-white/30 hover:text-white/70"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
+            )}
           </div>
-        )}
-
-        {/* Result Count */}
-        <div className="flex items-center justify-between mt-8 text-[10px] tracking-[0.3em] uppercase text-white/30">
-          <span>
-            {filteredProjects.length === 0
-              ? "No results"
-              : `${String(filteredProjects.length).padStart(2, "0")} ${
-                  filteredProjects.length === 1 ? "Result" : "Results"
-                }`}
-          </span>
-          {hasActiveFilter && (
-            <button
-              onClick={clearFilters}
-              className="text-white/50 hover:text-white transition-colors duration-500 flex items-center gap-2"
-            >
-              Clear
-              <X className="w-3 h-3" />
-            </button>
-          )}
         </div>
       </section>
 
       {/* Grid */}
-      <section className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 pb-24 md:pb-32">
+      <section className="max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-16">
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 md:gap-x-10 gap-y-16 md:gap-y-20">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="space-y-4">
-                <div className="aspect-video skeleton-pulse" />
-                <div className="h-2.5 w-16 skeleton-pulse" />
-                <div className="h-6 w-3/4 skeleton-pulse" />
-                <div className="h-3.5 w-full skeleton-pulse" />
-                <div className="h-3.5 w-2/3 skeleton-pulse" />
+              <div key={i} className="border-[3px] border-black animate-pulse">
+                <div className="aspect-video bg-[#F0F0F0]" />
+                <div className="p-5 space-y-3">
+                  <div className="h-3 bg-[#F0F0F0] w-20" />
+                  <div className="h-6 bg-[#F0F0F0] w-3/4" />
+                </div>
               </div>
             ))}
           </div>
         ) : filteredProjects.length === 0 ? (
-          <div className="py-24 flex flex-col items-center gap-6 text-center">
-            <span className="font-display text-3xl md:text-4xl text-white/40 italic font-light">
-              No matches found
-            </span>
-            <p className="text-white/40 text-sm font-light max-w-md">
+          <div className="py-24 flex flex-col items-center gap-6 text-center border-[3px] border-black p-12">
+            <h2 className="font-display text-black" style={{ fontSize: "2rem" }}>
+              No Matches Found
+            </h2>
+            <p className="text-black/60 text-sm max-w-md">
               Try adjusting your filters or search query.
             </p>
             {hasActiveFilter && (
-              <button
-                onClick={clearFilters}
-                className="text-[10px] tracking-[0.3em] uppercase text-white/60 hover:text-white transition-colors duration-500 py-3 border-b border-white/20 hover:border-white/60"
-              >
+              <button onClick={clearFilters} className="btn-secondary mt-4">
                 Clear all filters
               </button>
             )}
           </div>
         ) : (
           <>
-            <div
-              key={`${query}-${activeTag}-${activeYear}`}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 md:gap-x-10 gap-y-16 md:gap-y-20"
-            >
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {visibleProjects.map((project, index) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  index={index}
-                />
+                <ProjectCard key={project.id} project={project} index={index} />
               ))}
             </div>
 
-            {/* Load More */}
             {hasMore && (
-              <div className="mt-20 md:mt-24 pt-12 border-t border-white/5 flex flex-col items-center gap-4">
-                <span className="text-[10px] tracking-[0.3em] uppercase text-white/30">
-                  Showing {String(visibleProjects.length).padStart(2, "0")} of{" "}
-                  {String(filteredProjects.length).padStart(2, "0")}
+              <div className="mt-12 pt-8 border-t-[3px] border-black flex flex-col items-center gap-4">
+                <span className="font-mono-rb text-xs text-black/50 uppercase tracking-widest">
+                  Showing {String(visibleProjects.length).padStart(2, "0")} of {String(filteredProjects.length).padStart(2, "0")}
                 </span>
                 <button
-                  onClick={() =>
-                    setVisibleCount((c) => c + PROJECTS_PER_PAGE)
-                  }
-                  className="group inline-flex items-center gap-4 text-white/80 text-xs tracking-[0.3em] uppercase hover:text-white transition-colors duration-500 py-4 border-b border-white/20 hover:border-white/60"
+                  onClick={() => setVisibleCount((c) => c + PROJECTS_PER_PAGE)}
+                  className="btn-secondary"
                 >
                   Load More
-                  <span className="text-white/30 font-mono text-[10px] tracking-[0.2em]">
-                    [+
-                    {Math.min(
-                      PROJECTS_PER_PAGE,
-                      filteredProjects.length - visibleCount
-                    )}
-                    ]
+                  <span className="font-mono-rb text-xs ml-2">
+                    [+{Math.min(PROJECTS_PER_PAGE, filteredProjects.length - visibleCount)}]
                   </span>
                 </button>
               </div>
