@@ -141,11 +141,17 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/(^-|-$)+/g, "");
 
+            const normalizeUrl = (url) => {
+                const trimmed = url?.trim();
+                if (!trimmed) return "";
+                return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+            };
+
             const projectData = {
                 title: values.title,
                 description: values.description,
-                demo_link: values.demo_link,
-                repo_link: values.repo_link,
+                demo_link: normalizeUrl(values.demo_link),
+                repo_link: normalizeUrl(values.repo_link),
                 image_url: imageUrl,
                 tags: values.tags ? values.tags.split(",").map(tag => tag.trim()).filter(Boolean) : [],
                 slug: slug,
