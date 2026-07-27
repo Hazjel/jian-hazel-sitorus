@@ -12,6 +12,7 @@ import PageTransition from "./components/PageTransition";
 import CustomCursor from "./components/CustomCursor";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageTracker from "./components/PageTracker";
+import { Analytics } from "@vercel/analytics/react";
 
 // Eager — critical path
 import Index from "./pages/Index";
@@ -133,6 +134,7 @@ const App = () => (
             <AnimatedRoutes />
           </SmoothScroll>
         </BrowserRouter>
+        <Analytics />
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
