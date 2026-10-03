@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import profilePhoto from "@/assets/profile-photo.jpeg";
+import { supabase } from "@/integrations/supabase/client";
 
 const info = [
   { label: "Education", value: "Telkom University" },
@@ -8,6 +10,16 @@ const info = [
 ];
 
 const AboutSection = () => {
+  const [photoUrl, setPhotoUrl] = useState(profilePhoto);
+
+  useEffect(() => {
+    const { data } = supabase.storage
+      .from("project-images")
+      .getPublicUrl("profile/profile-photo");
+
+    setPhotoUrl(`${data.publicUrl}?v=${Date.now()}`);
+  }, []);
+
   return (
     <section id="about" className="scroll-mt-16 bg-white border-b-[3px] border-black">
       {/* Section header */}
@@ -32,8 +44,9 @@ const AboutSection = () => {
           <div className="lg:col-span-4">
             <div className="border-[5px] border-black overflow-hidden aspect-[4/5]">
               <img
-                src={profilePhoto}
+                src={photoUrl}
                 alt="Jian Hazel Sitorus"
+                onError={() => setPhotoUrl(profilePhoto)}
                 className="w-full h-full object-cover object-[center_20%] grayscale hover:grayscale-0 transition-[filter] duration-500"
               />
             </div>
