@@ -82,14 +82,28 @@ const AboutSection = () => {
               </div>
             </div>
 
-            {/* CV download */}
-            <div className="border-t-[3px] border-black pt-8">
+            {/* CV and resume downloads */}
+            <div className="border-t-[3px] border-black pt-8 flex flex-wrap gap-4">
               <a
                 href="/CV_Jian Hazel Sitorus.pdf"
                 download="Jian-Hazel-Sitorus-CV.pdf"
                 className="btn-secondary inline-flex"
               >
-                Download CV
+                Download Full CV
+              </a>
+              <a
+                href="/Jian-Hazel-Sitorus-Resume-Data-AI.pdf"
+                download="Jian-Hazel-Sitorus-Resume-Data-AI.pdf"
+                className="btn-secondary inline-flex"
+              >
+                Download Data/AI Resume
+              </a>
+              <a
+                href="/Jian-Hazel-Sitorus-Resume-Software-Developer.pdf"
+                download="Jian-Hazel-Sitorus-Resume-Software-Developer.pdf"
+                className="btn-secondary inline-flex"
+              >
+                Download Software Developer Resume
               </a>
             </div>
           </div>

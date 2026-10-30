@@ -94,7 +94,7 @@ const ProjectDialog = ({ projectToEdit, onOpenChange, onSuccess }) => {
         setLoading(true);
         try {
             let imageUrl = values.image_url;
-            let documentationUrls = [];
+            const documentationUrls = [...(projectToEdit?.documentation_urls ?? [])];
 
             if (imageFile) {
                 const fileExt = imageFile.name.split(".").pop();
