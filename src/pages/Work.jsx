@@ -4,6 +4,7 @@ import { ArrowLeft, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ProjectCard from "@/components/ProjectCard";
 import Navbar from "@/components/Navbar";
+import { hasTag, uniqueTags } from "@/lib/tags";
 
 const PROJECTS_PER_PAGE = 9;
 
@@ -34,16 +35,14 @@ const Work = () => {
   }, []);
 
   const { allTags, allYears } = useMemo(() => {
-    const tags = new Set();
     const years = new Set();
     projects.forEach((p) => {
-      (p.tags || []).forEach((t) => tags.add(t));
       const year = p.project_date
         ? new Date(p.project_date).getFullYear()
         : new Date(p.created_at).getFullYear();
       years.add(year);
     });
-    return { allTags: Array.from(tags).sort(), allYears: Array.from(years).sort((a, b) => b - a) };
+    return { allTags: uniqueTags(projects), allYears: Array.from(years).sort((a, b) => b - a) };
   }, [projects]);
 
   const filteredProjects = useMemo(() => {
@@ -53,7 +52,7 @@ const Work = () => {
         const hay = [p.title, p.description, ...(p.tags || [])].filter(Boolean).join(" ").toLowerCase();
         if (!hay.includes(q)) return false;
       }
-      if (activeTag !== "all" && (!p.tags || !p.tags.includes(activeTag))) return false;
+      if (activeTag !== "all" && !hasTag(p, activeTag)) return false;
       if (activeYear !== "all") {
         const year = p.project_date
           ? new Date(p.project_date).getFullYear()
