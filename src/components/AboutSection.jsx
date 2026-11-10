@@ -73,7 +73,7 @@ const AboutSection = () => {
                 {info.map((item, i) => (
                   <div
                     key={item.label}
-                    className={`py-6 pr-6 ${i < info.length - 1 ? "border-r-[3px] border-black pl-6 first:pl-0" : "pl-6"}`}
+                    className={`py-6 pr-6 ${i < info.length - 1 ? "border-r-[3px] border-black pl-6 first:pl-0" : "pl-6"} ${i === 2 ? "max-md:pl-0" : ""}`}
                   >
                     <p className="label-raw text-xs mb-2 text-black/50">{item.label}</p>
                     <p className="font-body text-sm font-semibold text-black">{item.value}</p>
