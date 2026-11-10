@@ -107,7 +107,7 @@ const Footer = () => {
 
         {/* Tagline */}
         <div className="py-4">
-          <p className="font-mono-rb text-xs text-white/20 uppercase tracking-widest text-center">
+          <p className="font-mono-rb text-xs text-white/50 uppercase tracking-widest text-center">
             Built with RawBlock Design System — No rounded corners. No shadows. No excuses.
           </p>
         </div>
