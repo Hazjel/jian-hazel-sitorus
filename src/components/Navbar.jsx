@@ -40,6 +40,15 @@ const Navbar = () => {
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
+  // The menu exists only below lg: close it when the viewport grows past lg (a tablet rotated
+  // to landscape), or the scroll lock above stays with no button left to undo it.
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const close = (e) => { if (e.matches) setIsOpen(false); };
+    desktop.addEventListener("change", close);
+    return () => desktop.removeEventListener("change", close);
+  }, []);
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-[100] bg-white border-b-[3px] border-black">
@@ -55,7 +64,7 @@ const Navbar = () => {
             </a>
 
             {/* Desktop nav */}
-            <div className="hidden md:flex items-center gap-0">
+            <div className="hidden lg:flex items-center gap-0">
               {navItems.map((item) => {
                 const isActive = activeSection === item.href.replace("#", "");
                 return (
@@ -79,7 +88,7 @@ const Navbar = () => {
             <a
               href="#contact"
               onClick={(e) => scrollToSection(e, "#contact")}
-              className="hidden md:inline-flex items-center gap-2 btn-primary text-sm py-2 px-4"
+              className="hidden lg:inline-flex items-center gap-2 btn-primary text-sm py-2 px-4"
             >
               <span className="w-2 h-2 rounded-full bg-[#008000] animate-pulse" />
               Available
@@ -87,7 +96,7 @@ const Navbar = () => {
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden flex flex-col justify-center items-center gap-1.5 w-10 h-10 border-[3px] border-black"
+              className="lg:hidden flex flex-col justify-center items-center gap-1.5 w-10 h-10 border-[3px] border-black"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
               aria-expanded={isOpen}
@@ -102,7 +111,7 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       <div
-        className={`fixed inset-0 z-[99] bg-black md:hidden transition-opacity duration-200 ${
+        className={`fixed inset-0 z-[99] bg-black lg:hidden transition-opacity duration-200 ${
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         aria-hidden={!isOpen}
